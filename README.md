@@ -1,4 +1,6 @@
-# 🚀 Manav Raj Baghel — Developer Portfolio
+<p align="center">
+# Manav Baghel — Developer Portfolio
+</p>
 
 > **Backend Developer • Java • Spring Boot • Python**
 
