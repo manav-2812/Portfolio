@@ -156,7 +156,7 @@ function SkillTile({ skill, index, animate }) {
         className="flex flex-col items-center rounded-2xl select-none"
         style={{
           width: '4.75rem',
-          padding: '0.6rem 0.5rem 0.5rem',
+          padding: '0.85rem 0.5rem 0.75rem',
           gap: '0.4rem',
           background: hovered
             ? 'rgba(255,255,255,0.06)'

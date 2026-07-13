@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { motion, useInView } from 'framer-motion'
+import { motion, useInView, AnimatePresence } from 'framer-motion'
 import {
   HiOutlineChatBubbleLeftRight,
   HiOutlineEnvelope,
@@ -112,7 +112,18 @@ export default function Contact() {
   const inView = useInView(ref, { once: true, margin: '-80px' })
   const [status, setStatus] = useState(null) // 'sending' | 'sent' | 'error'
   const [focused, setFocused] = useState(null)
+  const [copied, setCopied] = useState(false)
   const statusId = 'form-status'
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText('manavbaghhel@gmail.com')
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch (err) {
+      console.error('Failed to copy email: ', err)
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -287,15 +298,73 @@ export default function Contact() {
               <p className="font-mono text-xs mb-3" style={{ color: 'var(--text-muted)' }}>
                 Preferred contact
               </p>
-              <a
-                href="mailto:manavbaghhel@gmail.com"
-                className="font-mono text-sm font-medium block mb-1"
-                style={{ color: 'var(--accent-light)', transition: 'color 0.2s' }}
-                onMouseEnter={e => e.currentTarget.style.color = 'var(--accent-cyan)'}
-                onMouseLeave={e => e.currentTarget.style.color = 'var(--accent-light)'}
-              >
-                manavbaghhel@gmail.com
-              </a>
+              <div className="flex items-center justify-between gap-3 mb-1">
+                <a
+                  href="mailto:manavbaghhel@gmail.com"
+                  className="font-mono text-sm font-medium block truncate"
+                  style={{ color: 'var(--accent-light)', transition: 'color 0.2s' }}
+                  onMouseEnter={e => e.currentTarget.style.color = 'var(--accent-cyan)'}
+                  onMouseLeave={e => e.currentTarget.style.color = 'var(--accent-light)'}
+                >
+                  manavbaghhel@gmail.com
+                </a>
+                <button
+                  onClick={handleCopy}
+                  className="px-2.5 py-1 rounded-lg flex items-center gap-1.5 font-mono select-none"
+                  style={{
+                    background: copied ? 'rgba(34, 197, 94, 0.12)' : 'rgba(255, 255, 255, 0.03)',
+                    border: `1px solid ${copied ? 'rgba(34, 197, 94, 0.25)' : 'rgba(255, 255, 255, 0.06)'}`,
+                    color: copied ? '#4ade80' : 'var(--text-muted)',
+                    fontSize: '0.65rem',
+                    transition: 'all 0.2s ease',
+                    cursor: 'pointer',
+                  }}
+                  title="Copy email to clipboard"
+                  aria-label={copied ? "Email copied!" : "Copy email address"}
+                  onMouseEnter={e => {
+                    if (!copied) {
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)'
+                      e.currentTarget.style.color = 'var(--text-primary)'
+                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.12)'
+                    }
+                  }}
+                  onMouseLeave={e => {
+                    if (!copied) {
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)'
+                      e.currentTarget.style.color = 'var(--text-muted)'
+                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.06)'
+                    }
+                  }}
+                >
+                  <AnimatePresence mode="wait" initial={false}>
+                    <motion.span
+                      key={copied ? 'copied' : 'copy'}
+                      initial={{ opacity: 0, y: 4, scale: 0.9 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -4, scale: 0.9 }}
+                      transition={{ duration: 0.12 }}
+                      className="flex items-center gap-1"
+                    >
+                      {copied ? (
+                        <>
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                          <span>Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                          </svg>
+                          <span>Copy</span>
+                        </>
+                      )}
+                    </motion.span>
+                  </AnimatePresence>
+                </button>
+              </div>
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
                 Usually replies within 24 hours
               </p>
