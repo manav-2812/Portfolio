@@ -1,56 +1,127 @@
-# 🚀 Manav Baghel — Developer Portfolio
+# 🚀 Manav Raj Baghel — Developer Portfolio
 
-<div align="center">
+> **Backend Developer • Java • Spring Boot • Python**
 
-### Backend Developer • Java • Spring Boot • Python
+A modern, recruiter-friendly portfolio built with **React, Vite, Three.js, Framer Motion, and Tailwind CSS**, showcasing my projects, technical skills, internship experience, and software engineering journey.
 
-A premium, high-performance developer portfolio showcasing my projects, technical skills, professional experience, and software engineering journey.
-
-[![Live Demo](https://img.shields.io/badge/Live-Demo-7C3AED?style=for-the-badge)](YOUR_VERCEL_URL)
-[![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](YOUR_GITHUB_REPO)
-[![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
-
-</div>
-
----
-
-## 📖 Overview
-
-This portfolio was designed and developed to reflect my approach to software engineering—clean architecture, thoughtful user experience, and modern web technologies.
-
-Rather than serving as a simple personal website, it demonstrates my technical abilities through interactive design, responsive layouts, performant animations, and detailed project showcases.
-
-The primary goal of this portfolio is to provide recruiters, hiring managers, and fellow developers with a comprehensive overview of my skills, projects, and professional growth as a Backend Developer.
+> **Replace the placeholders below before publishing**
+>
+> - `YOUR_VERCEL_URL`
+> - `YOUR_GITHUB_USERNAME`
+> - `YOUR_LINKEDIN_URL`
+> - `YOUR_EMAIL`
+> - Screenshot paths in `docs/screenshots/`
 
 ---
 
-## ✨ Features
+<p align="center">
+  <img src="docs/banner.webp" alt="Portfolio Banner" width="100%">
+</p>
 
-- Premium modern UI with a futuristic dark theme
-- Fully responsive across desktop, tablet, and mobile devices
-- Interactive Three.js background
-- Smooth animations powered by Framer Motion
-- Recruiter-friendly layout and navigation
-- Dedicated sections for:
-  - About
-  - Technical Skills
-  - Projects
-  - Internship Experience
-  - Certifications
-  - Contact Information
-- Project architecture visualizations
-- Professional timeline
-- Optimized loading experience
-- Accessibility-focused interactions
-- SEO optimized
-- Performance optimized
-- Clean component-based architecture
+<p align="center">
+
+![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
+![Three.js](https://img.shields.io/badge/Three.js-000000?logo=threedotjs)
+![Framer Motion](https://img.shields.io/badge/Framer%20Motion-black)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-06B6D4?logo=tailwindcss&logoColor=white)
+![MIT](https://img.shields.io/badge/License-MIT-blue)
+
+</p>
+
+## 🌐 Live Demo
+
+**Website:** YOUR_VERCEL_URL
 
 ---
 
-## 🛠 Tech Stack
+# Table of Contents
 
-### Frontend
+- Overview
+- Features
+- Screenshots
+- Tech Stack
+- Project Architecture
+- Folder Structure
+- Getting Started
+- Available Scripts
+- Performance
+- Accessibility
+- Design Philosophy
+- Roadmap
+- Deployment
+- Contributing
+- License
+- Author
+
+---
+
+# 📖 Overview
+
+This portfolio represents my software engineering approach: clean architecture, modern frontend engineering, thoughtful user experience, and attention to performance.
+
+Rather than acting as a simple personal website, it demonstrates my ability to build polished, production-quality interfaces while presenting backend-focused projects in a clear and recruiter-friendly manner.
+
+The portfolio highlights my technical skills, internship experience, certifications, and selected projects while maintaining a premium user experience through smooth animations, responsive layouts, and interactive 3D elements.
+
+---
+
+# ✨ Features
+
+- Premium dark UI
+- Interactive Three.js hero
+- Smooth Framer Motion animations
+- Responsive design
+- Backend-focused branding
+- Recruiter-friendly layout
+- Internship timeline
+- Certifications section
+- Technical skills grouped by category
+- Project architecture diagrams
+- Accessibility improvements
+- Lazy-loaded components
+- Performance optimizations
+- SEO-ready metadata
+- GitHub & LinkedIn integration
+
+---
+
+# 📸 Screenshots
+
+Create the following structure:
+
+```text
+docs/
+└── screenshots/
+    ├── hero.webp
+    ├── about.webp
+    ├── skills.webp
+    ├── projects.webp
+    ├── experience.webp
+    └── contact.webp
+```
+
+Then embed them:
+
+```md
+## Hero
+
+![Hero](docs/screenshots/hero.webp)
+
+## Skills
+
+![Skills](docs/screenshots/skills.webp)
+
+## Projects
+
+![Projects](docs/screenshots/projects.webp)
+```
+
+---
+
+# 🛠 Tech Stack
+
+## Frontend
 
 - React
 - Vite
@@ -59,34 +130,59 @@ The primary goal of this portfolio is to provide recruiters, hiring managers, an
 - CSS3
 - Tailwind CSS
 
-### UI & Animations
+## UI & Animation
 
-- Framer Motion
 - Three.js
 - React Three Fiber
+- Framer Motion
 - GSAP
 - Lucide React
 
-### Development Tools
+## Development Tools
 
 - Git
 - GitHub
 - VS Code
 - npm
 
-### Deployment
+## Deployment
 
 - Vercel
 
 ---
 
-## 📂 Project Structure
+# 🏗 Project Architecture
+
+```text
+User
+   │
+   ▼
+React + Vite
+   │
+   ▼
+Reusable Components
+   │
+   ├── Hero
+   ├── About
+   ├── Skills
+   ├── Projects
+   ├── Experience
+   └── Contact
+   │
+   ▼
+Three.js Scene
+   │
+   ▼
+Framer Motion Animations
+```
+
+---
+
+# 📂 Folder Structure
 
 ```text
 portfolio/
-│
 ├── public/
-│
 ├── src/
 │   ├── assets/
 │   ├── components/
@@ -95,52 +191,35 @@ portfolio/
 │   ├── utils/
 │   ├── styles/
 │   └── App.jsx
-│
-├── package.json
-├── vite.config.js
+├── docs/
 ├── README.md
-└── .gitignore
+├── package.json
+└── vite.config.js
 ```
 
 ---
 
-## 🚀 Getting Started
+# 🚀 Getting Started
 
-### Clone the repository
-
-```bash
-git clone https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git
-```
-
-### Navigate into the project
+Clone the repository
 
 ```bash
-cd YOUR_REPOSITORY
+git clone https://github.com/YOUR_GITHUB_USERNAME/portfolio.git
 ```
 
-### Install dependencies
+Install dependencies
 
 ```bash
 npm install
 ```
 
-### Start development server
+Run locally
 
 ```bash
 npm run dev
 ```
 
-The application will be available at
-
-```
-http://localhost:5173
-```
-
----
-
-## 📦 Production Build
-
-Build the application
+Build
 
 ```bash
 npm run build
@@ -154,170 +233,113 @@ npm run preview
 
 ---
 
-# 📱 Sections
+# 📜 Available Scripts
 
-## Hero
-
-A premium landing section introducing who I am, my technical focus, and quick access to projects and contact information.
-
----
-
-## About
-
-Highlights my background, backend engineering interests, and software development philosophy.
+| Command           | Description               |
+| ----------------- | ------------------------- |
+| `npm run dev`     | Starts development server |
+| `npm run build`   | Creates production build  |
+| `npm run preview` | Preview production build  |
+| `npm run lint`    | Run ESLint                |
 
 ---
 
-## Technical Skills
+# ⚡ Performance
 
-Organized technology stack grouped into categories including
+This portfolio focuses on performance through:
 
-- Languages
-- Backend
-- Database
-- DevOps
-- Tools
-
----
-
-## Projects
-
-A curated collection of projects demonstrating practical software engineering skills, backend development, database design, and modern application architecture.
-
-Each project includes
-
-- Overview
-- Technologies
-- Features
-- Architecture
-- Live Demo
-- GitHub Repository
-
----
-
-## Experience
-
-Professional internship experience highlighting practical backend development and collaborative software engineering.
-
----
-
-## Certifications
-
-Professional certifications earned through industry-recognized platforms.
-
----
-
-## Contact
-
-Quick access to
-
-- Email
-- GitHub
-- LinkedIn
-- Resume (Coming Soon)
-
----
-
-# 🎯 Design Goals
-
-This portfolio was built around five principles
-
-- Performance First
-- Clean Architecture
-- Excellent User Experience
-- Modern Engineering Practices
-- Recruiter-Friendly Presentation
-
-Every design decision, animation, and interaction was implemented to balance aesthetics with usability while maintaining fast loading times and accessibility.
-
----
-
-# 📈 Performance
-
-The portfolio is optimized for
-
-- Fast initial load
 - Lazy loading
+- Code splitting
+- Optimized assets
 - Responsive rendering
-- Smooth animations
-- Efficient component structure
-- Modern build optimization using Vite
+- GPU-friendly animations
+- Component-based architecture
 
 ---
 
-# 🌐 Deployment
+# ♿ Accessibility
 
-The project is deployed using **Vercel**.
-
-Future updates are automatically deployed through GitHub integration.
-
----
-
-# 👨‍💻 About Me
-
-I'm **Manav Raj Baghel**, a **Backend Developer** and **7th Semester B.Tech Computer Science & Engineering student** at **Baba Banda Singh Bahadur Engineering College (BBSBEC), Fatehgarh Sahib, Punjab**, currently maintaining a **CGPA of 8.0**.
-
-I enjoy building scalable backend systems, RESTful APIs, and database-driven applications using Java, Spring Boot, Python, and Flask. I'm continuously expanding my expertise in Docker, Kubernetes, PostgreSQL, cloud technologies, and modern software engineering practices while building real-world projects.
+- Semantic HTML
+- Keyboard navigation
+- Focus indicators
+- Reduced motion support
+- Responsive typography
 
 ---
 
-# 📬 Contact
+# 🎨 Design Philosophy
 
-**Email**
+Inspired by modern product companies such as **Linear, Vercel, Stripe, Framer, and Apple**, the portfolio balances visual polish with usability.
 
-YOUR_EMAIL
+Every animation is designed to support the user experience rather than distract from it. The interface emphasizes readability, performance, and recruiter-friendly navigation.
 
-**LinkedIn**
+---
 
-YOUR_LINKEDIN
+# 🗺 Roadmap
 
-**GitHub**
+- [x] Premium UI
+- [x] Interactive 3D hero
+- [x] Responsive design
+- [x] Recruiter-friendly layout
+- [x] Project architecture diagrams
+- [ ] Resume integration
+- [ ] Technical blog
+- [ ] Additional backend projects
+- [ ] Project case studies
 
-https://github.com/YOUR_USERNAME
+---
 
-**Portfolio**
+# 🚀 Deployment
 
-YOUR_VERCEL_URL
+This project is deployed on **Vercel**.
+
+Every push to the `main` branch automatically triggers a new production deployment.
 
 ---
 
 # 🤝 Contributing
 
-Although this is a personal portfolio, suggestions, feedback, and improvements are always appreciated.
+Although this is a personal portfolio, feedback, suggestions, and improvements are always welcome.
 
-If you discover any issues or have ideas for enhancement, feel free to open an issue or submit a pull request.
+Feel free to open an issue or submit a pull request.
 
 ---
 
 # 📄 License
 
-This project is licensed under the MIT License.
-
-See the **LICENSE** file for more information.
+This project is licensed under the **MIT License**.
 
 ---
 
-<div align="center">
+# 👨‍💻 Author
 
-### Thank you for visiting my portfolio!
+**Manav Raj Baghel**
 
-If you found this project interesting, consider giving it a ⭐ on GitHub.
+Backend Developer
 
-</div>
+- GitHub: https://github.com/YOUR_GITHUB_USERNAME
+- LinkedIn: YOUR_LINKEDIN_URL
+- Portfolio: YOUR_VERCEL_URL
+- Email: YOUR_EMAIL
 
-# React + Vite
+---
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+# 🙏 Acknowledgements
 
-Currently, two official plugins are available:
+Design inspiration:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Vercel
+- Linear
+- Framer
+- Three.js Community
+- React Community
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+<p align="center">
 
-## Expanding the Oxlint configuration
+### Thank you for visiting!
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+If you found this project helpful or inspiring, consider giving it a ⭐ on GitHub.
+
+</p>
