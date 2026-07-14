@@ -1,7 +1,5 @@
 <div align="center">
 
-<img src="docs/banner.webp" alt="Manav Baghel — Developer Portfolio" width="100%" />
-
 # Manav Baghel | Developer Portfolio
 
 **Backend Developer** &nbsp;·&nbsp; Java &nbsp;·&nbsp; Spring Boot &nbsp;·&nbsp; Python &nbsp;·&nbsp; Flask
