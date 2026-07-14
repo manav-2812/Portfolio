@@ -177,6 +177,9 @@ The 3D scene is isolated behind a lazy import and an error boundary specifically
 
 ```
 portfolio/
+├── docs/
+│   ├── banner.webp            # README hero banner
+│   └── screenshots/           # Section screenshots referenced in README
 ├── public/
 │   ├── project-previews/     # Project screenshot assets
 │   ├── favicon.svg
@@ -204,6 +207,7 @@ portfolio/
 │   └── index.css              # Design tokens, glass recipe, global styles
 ├── index.html                 # Meta tags, Open Graph, JSON-LD
 ├── vite.config.js             # Manual chunk splitting configuration
+└── package.json
 └── package.json
 ```
 
