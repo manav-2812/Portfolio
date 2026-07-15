@@ -1,7 +1,8 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { SiHackerrank } from 'react-icons/si'
-import { HiOutlineCheckBadge, HiOutlineArrowUpRight } from 'react-icons/hi2'
+import { HiOutlineArrowUpRight } from 'react-icons/hi2'
+import CountUp from './CountUp'
 
 /* ── Cert data ─────────────────────────────────────────────────────────── */
 const certifications = [
@@ -10,13 +11,12 @@ const certifications = [
     issuer: 'Deloitte',
     IssuerIcon: null,
     issuerInitial: 'D',
-    color: '#86efac',
     year: '2026',
     certs: [
       {
         name: 'Technology Job Simulation',
         type: 'Job Simulation',
-        link: 'https://linkedin.com/in/manav-baghel',
+        link: 'https://www.theforage.com/completion-certificates/9PBTqmSxAf6zZTseP/udmxiyHeqYQLkTPvf_9PBTqmSxAf6zZTseP_6a36683ad4508269f5c396de_1781953593391_completion_certificate.pdf',
         description: 'Software engineering tasks, problem decomposition, and professional development in a technology consulting context.',
       },
     ],
@@ -26,31 +26,30 @@ const certifications = [
     issuer: 'HackerRank',
     IssuerIcon: SiHackerrank,
     issuerInitial: 'H',
-    color: '#4ade80',
     year: '2026',
     certs: [
       {
         name: 'REST API',
         type: 'Intermediate',
-        link: 'https://linkedin.com/in/manav-baghel',
+        link: 'https://www.hackerrank.com/certificates/79cba608187f',
         description: 'RESTful API design, HTTP methods, status codes, and API consumption.',
       },
       {
         name: 'Software Engineer Intern',
         type: 'Assessment',
-        link: 'https://linkedin.com/in/manav-baghel',
+        link: 'https://www.hackerrank.com/certificates/fb2eb20eb5e0',
         description: 'Data structures, algorithms, and core programming concepts.',
       },
       {
         name: 'SQL',
         type: 'Intermediate',
-        link: 'https://linkedin.com/in/manav-baghel',
+        link: 'https://www.hackerrank.com/certificates/7a366fe416f2',
         description: 'JOINs, subqueries, aggregation, and query optimization.',
       },
       {
         name: 'Problem Solving',
         type: 'Intermediate',
-        link: 'https://linkedin.com/in/manav-baghel',
+        link: 'https://www.hackerrank.com/certificates/5bf3432878f5',
         description: 'Algorithmic thinking and data structure proficiency.',
       },
     ],
@@ -59,145 +58,127 @@ const certifications = [
 
 /* ── Card variants ─────────────────────────────────────────────────────── */
 const cardVariants = {
-  hidden:  { opacity: 0, y: 28, scale: 0.97 },
+  hidden:  { opacity: 0, y: 20 },
   visible: (i) => ({
-    opacity: 1, y: 0, scale: 1,
-    transition: { duration: 0.5, delay: i * 0.07, ease: [0.22, 1, 0.36, 1] },
+    opacity: 1, y: 0,
+    transition: { duration: 0.65, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] },
   }),
+}
+
+/* ── Section reveal variants ───────────────────────────────────────────── */
+const revealVariants = {
+  hidden:  { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.72, ease: [0.22, 1, 0.36, 1] } },
 }
 
 /* ── Single cert card ──────────────────────────────────────────────────── */
 function CertCard({ cert, issuerData, globalIndex, animate }) {
-  const { IssuerIcon, issuerInitial, color, issuer, year } = issuerData
+  const { IssuerIcon, issuerInitial, issuer, year } = issuerData
 
   return (
-    <motion.a
+    <motion.div
       custom={globalIndex}
       variants={cardVariants}
       initial="hidden"
       animate={animate}
+    >
+      <a
       href={cert.link}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label={`View ${cert.name} certificate from ${issuer} on LinkedIn`}
-      className="group relative flex flex-col rounded-2xl overflow-hidden"
+      aria-label={`View ${cert.name} certificate from ${issuer}`}
+      className="card card-hover group relative flex flex-col"
       style={{
-        background: 'rgba(255,255,255,0.03)',
-        border: '1px solid rgba(255,255,255,0.07)',
-        boxShadow: '0 2px 16px rgba(0,0,0,0.2)',
-        transition: 'border-color 0.3s, box-shadow 0.3s, transform 0.25s',
+        borderRadius: 'var(--radius-card)',
         textDecoration: 'none',
       }}
-      whileHover={{
-        y: -4,
-        transition: { duration: 0.22, ease: [0.4, 0, 0.2, 1] },
-      }}
-      onMouseEnter={e => {
-        e.currentTarget.style.borderColor = `${color}45`
-        e.currentTarget.style.boxShadow = `0 8px 40px rgba(0,0,0,0.3), 0 0 0 0.5px ${color}30`
-      }}
-      onMouseLeave={e => {
-        e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)'
-        e.currentTarget.style.boxShadow = '0 2px 16px rgba(0,0,0,0.2)'
-      }}
-    >
-      {/* Top accent line */}
-      <div
-        className="h-[1.5px] w-full"
-        style={{ background: `linear-gradient(90deg, ${color}90, ${color}20, transparent)` }}
-        aria-hidden="true"
-      />
-
+      >
       <div className="flex flex-col flex-1 p-5 gap-4">
-        {/* Row 1 — issuer badge + verified + link arrow */}
+        {/* Row 1 — issuer badge + verified label + link arrow */}
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2.5">
-            {/* Issuer icon badge */}
+            {/* Issuer icon badge — 32×32px flat square */}
             <div
-              className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
               style={{
-                background: `${color}15`,
-                border: `1px solid ${color}30`,
+                width: '2rem',
+                height: '2rem',
+                border: '1px solid var(--hairline)',
+                borderRadius: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: 'var(--paper-deep)',
+                flexShrink: 0,
               }}
               aria-hidden="true"
             >
               {IssuerIcon
-                ? <IssuerIcon size={15} style={{ color }} />
-                : <span className="font-display font-bold text-sm" style={{ color }}>{issuerInitial}</span>
+                ? <IssuerIcon size={14} style={{ color: 'var(--ink-soft)' }} />
+                : <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--ink-soft)' }}>{issuerInitial}</span>
               }
             </div>
 
-            {/* Issuer name */}
-            <span className="font-semibold text-xs" style={{ color: 'var(--text-secondary)' }}>
-              {issuer}
+            {/* Issuer name + year */}
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--text-micro)', color: 'var(--ink-faint)' }}>
+              {issuer} · {year}
             </span>
           </div>
 
-          {/* Verified pill */}
-          <div
-            className="flex items-center gap-1 px-2 py-0.5 rounded-full flex-shrink-0"
-            style={{
-              background: `${color}10`,
-              border: `1px solid ${color}28`,
-            }}
-          >
-            <HiOutlineCheckBadge size={11} style={{ color }} aria-hidden="true" />
-            <span className="font-mono text-[0.6rem]" style={{ color }}>Verified</span>
-          </div>
+          {/* Verified label — plain mono span */}
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--text-micro)', color: 'var(--ink-faint)', letterSpacing: '0.08em', flexShrink: 0 }}>
+            Verified
+          </span>
         </div>
 
-        {/* Row 2 — cert name (grows to fill) */}
+        {/* Row 2 — cert title (grows to fill) */}
         <div className="flex-1">
           <h4
-            className="font-display font-bold text-base leading-snug"
-            style={{ color: 'var(--text-primary)' }}
+            style={{
+              fontFamily: 'var(--font-display)',
+              color: 'var(--ink)',
+              fontSize: 'var(--text-body-lg)',
+              fontWeight: 600,
+              lineHeight: 1.25,
+            }}
           >
             {cert.name}
           </h4>
           <p
             className="mt-1.5 text-xs leading-relaxed line-clamp-2"
-            style={{ color: 'var(--text-muted)' }}
+            style={{ color: 'var(--ink-faint)', fontFamily: 'var(--font-body)' }}
           >
             {cert.description}
           </p>
         </div>
 
-        {/* Row 3 — type tag + year + arrow */}
+        {/* Row 3 — type tag + link arrow */}
         <div className="flex items-center justify-between gap-2 mt-auto">
-          <div className="flex items-center gap-2">
-            {/* Type badge */}
-            <span
-              className="font-mono text-[0.6rem] px-2 py-0.5 rounded-full"
-              style={{
-                color,
-                background: `${color}12`,
-                border: `1px solid ${color}25`,
-              }}
-            >
-              {cert.type}
-            </span>
-            {/* Year */}
-            <span className="font-mono text-[0.6rem]" style={{ color: 'var(--text-muted)' }}>
-              {year}
-            </span>
-          </div>
+          {/* Type tag — mono pill */}
+          <span
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: 'var(--text-micro)',
+              color: 'var(--ink-faint)',
+              border: '1px solid var(--hairline)',
+              borderRadius: '999px',
+              padding: '0.2rem 0.65rem',
+              background: 'transparent',
+            }}
+          >
+            {cert.type}
+          </span>
 
           {/* Animated link arrow */}
           <span
-            className="w-6 h-6 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200"
-            style={{
-              background: `${color}15`,
-              border: `1px solid ${color}30`,
-              color,
-              transform: 'translateX(-4px)',
-            }}
+            className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
             aria-hidden="true"
           >
-            <HiOutlineArrowUpRight size={12} />
+            <HiOutlineArrowUpRight size={12} style={{ color: 'var(--ink-soft)' }} />
           </span>
         </div>
       </div>
-    </motion.a>
+      </a>
+    </motion.div>
   )
 }
 
@@ -219,23 +200,30 @@ export default function Certifications() {
         {/* Header */}
         <motion.div
           className="mb-20"
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
+          variants={revealVariants}
+          initial="hidden"
+          animate={inView ? 'visible' : 'hidden'}
         >
           <div className="flex items-center gap-4 mb-4">
             <span className="section-num" aria-hidden="true">04 / Certifications</span>
-            <div className="h-px flex-1" style={{ background: 'var(--border-subtle)' }} aria-hidden="true" />
+            <div className="h-px flex-1" style={{ background: 'var(--hairline)' }} aria-hidden="true" />
           </div>
           <h2
             id="certs-heading"
-            className="font-display font-bold leading-tight"
-            style={{ fontSize: 'clamp(2.2rem, 5vw, 3.8rem)', color: 'var(--text-primary)' }}
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'var(--text-h1)',
+              color: 'var(--ink)',
+              fontWeight: 700,
+              lineHeight: 1.1,
+            }}
           >
-            Verified{' '}
-            <span className="gradient-text">credentials</span>
+            Verified credentials
           </h2>
-          <p className="mt-4 max-w-lg" style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
+          <p
+            className="mt-4 max-w-lg"
+            style={{ color: 'var(--ink-soft)', fontSize: 'var(--text-body)', fontFamily: 'var(--font-body)' }}
+          >
             Industry certifications validating core software engineering and backend development skills.
           </p>
         </motion.div>
@@ -243,40 +231,50 @@ export default function Certifications() {
         {/* Stat strip */}
         <motion.div
           className="flex items-center gap-8 mb-12"
-          initial={{ opacity: 0, y: 16 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, delay: 0.15 }}
+          variants={revealVariants}
+          initial="hidden"
+          animate={inView ? 'visible' : 'hidden'}
+          transition={{ delay: 0.1 }}
         >
           {[
-            { value: totalCerts,                  label: 'Total Credentials' },
-            { value: certifications.length,        label: 'Issuing Organisations' },
-            { value: '100%',                       label: 'Verified' },
-          ].map(({ value, label }) => (
+            { value: totalCerts,             label: 'Total Credentials' },
+            { value: certifications.length,  label: 'Issuing Organisations' },
+            { value: 100, suffix: '%',       label: 'Verified' },
+          ].map(({ value, suffix, label }) => (
             <div key={label} className="flex flex-col">
+              <CountUp
+                value={value}
+                suffix={suffix}
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontWeight: 700,
+                  fontSize: '1.5rem',
+                  color: 'var(--ink)',
+                }}
+              />
               <span
-                className="font-display font-bold text-2xl"
-                style={{ color: 'var(--text-primary)' }}
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 'var(--text-micro)',
+                  color: 'var(--ink-faint)',
+                  marginTop: '0.125rem',
+                }}
               >
-                {value}
-              </span>
-              <span className="font-mono text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
                 {label}
               </span>
             </div>
           ))}
-          <div className="h-px flex-1" style={{ background: 'var(--border-subtle)' }} aria-hidden="true" />
+          <div className="h-px flex-1" style={{ background: 'var(--hairline)' }} aria-hidden="true" />
           <a
             href="https://linkedin.com/in/manav-baghel"
             target="_blank"
             rel="noopener noreferrer"
-            className="font-mono text-xs flex items-center gap-1.5 flex-shrink-0"
-            style={{ color: 'var(--text-muted)', transition: 'color 0.2s' }}
+            className="underline-draw font-mono text-xs flex items-center gap-1.5 flex-shrink-0"
+            style={{ color: 'var(--pine)' }}
             aria-label="View all credentials on LinkedIn"
-            onMouseEnter={e => e.currentTarget.style.color = 'var(--accent-light)'}
-            onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}
           >
             View on LinkedIn
-            <HiOutlineArrowUpRight size={12} />
+            <HiOutlineArrowUpRight size={12} aria-hidden="true" />
           </a>
         </motion.div>
 
