@@ -4,6 +4,11 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: ['./src/test/setup.js'],
+  },
   build: {
     rollupOptions: {
       output: {
@@ -11,7 +16,7 @@ export default defineConfig({
           if (id.includes('three') || id.includes('@react-three')) {
             return 'three-vendor'
           }
-          if (id.includes('framer-motion') || id.includes('gsap')) {
+          if (id.includes('framer-motion')) {
             return 'animation-vendor'
           }
         },
