@@ -1,20 +1,6 @@
-import { Suspense, lazy, useRef, useEffect, useState } from 'react'
-import { motion, useInView } from 'framer-motion'
-import ErrorBoundary from './ErrorBoundary'
-
-const Scene3D = lazy(() => import('./Scene3D'))
-
-const sentence = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.035 } },
-}
-const letter = {
-  hidden:  { opacity: 0, y: 60, rotateX: -25, filter: 'blur(6px)' },
-  visible: {
-    opacity: 1, y: 0, rotateX: 0, filter: 'blur(0px)',
-    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
-  },
-}
+import { useRef } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
+import CountUp from './CountUp'
 
 const metrics = [
   { value: '02', label: 'APIs built' },
@@ -23,68 +9,35 @@ const metrics = [
   { value: '01', label: 'live deployment' },
 ]
 
-function AnimatedText({ text, className, style, variant }) {
-  // variant='gradient' → animated sweep gradient (used on "Baghel")
-  // variant='static'   → white base + ::after shimmer highlight (used on "Manav")
-  const variantClass = variant === 'gradient' ? 'name-gradient'
-                     : variant === 'static'   ? 'name-static'
-                     : ''
-
-  return (
-    <motion.span
-      className={className}
-      style={{ perspective: '900px', display: 'block' }}
-      variants={sentence}
-      initial="hidden"
-      animate="visible"
-      aria-label={text}
-      role="text"
-    >
-      {text.split('').map((char, i) => (
-        <motion.span
-          key={i}
-          variants={letter}
-          // data-text mirrors the character so ::after can read it for the shimmer
-          data-text={char === ' ' ? '\u00A0' : char}
-          className={variantClass}
-          style={{
-            display: 'inline-block',
-            // Carry over any explicit style (font, size, tracking) but let
-            // the CSS class own color / gradient so animations work cleanly.
-            ...(!variantClass ? style : {
-              fontFamily: style?.fontFamily,
-              fontSize:   style?.fontSize,
-              fontWeight: style?.fontWeight,
-              letterSpacing: style?.letterSpacing,
-            }),
-          }}
-          aria-hidden="true"
-        >
-          {char === ' ' ? '\u00A0' : char}
-        </motion.span>
-      ))}
-    </motion.span>
-  )
-}
-
+/* ── Hero Section ─────────────────────────────────────────────────────────── */
 export default function Hero() {
   const heroRef = useRef(null)
-  const mouseRef = useRef({ x: 0, y: 0 })
-  const orbRef   = useRef(null)
-  const heroInView = useInView(heroRef, { amount: 0.08 })
 
-  /* Mouse-reactive ambient orb */
-  useEffect(() => {
-    const onMove = e => {
-      mouseRef.current = { x: e.clientX, y: e.clientY }
-      if (orbRef.current) {
-        orbRef.current.style.transform =
-          `translate(${e.clientX * 0.04}px, ${e.clientY * 0.04}px)`
-      }
-    }
-    window.addEventListener('mousemove', onMove, { passive: true })
-    return () => window.removeEventListener('mousemove', onMove)
-  }, [])
+  // Detect reduced-motion preference
+  const prefersReducedMotion =
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+  // Scroll-reactive: track how far the hero has scrolled out of view
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ['start start', 'end start'],
+  })
+
+  // Hero content parallax: fade + translate as user scrolls
+  // Disabled when prefers-reduced-motion is set
+  const contentY       = useTransform(scrollYProgress, [0, 0.8], prefersReducedMotion ? [0, 0]   : [0, -50])
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.7], prefersReducedMotion ? [1, 1]   : [1, 0])
+
+  // Shared entrance animation helpers
+  const fadeUp = (delay = 0) =>
+    prefersReducedMotion
+      ? { initial: { opacity: 1, y: 0 }, animate: { opacity: 1, y: 0 }, transition: {} }
+      : {
+          initial: { opacity: 0, y: 14 },
+          animate: { opacity: 1, y: 0 },
+          transition: { delay, duration: 0.55, ease: [0.22, 1, 0.36, 1] },
+        }
 
   return (
     <section
@@ -94,259 +47,241 @@ export default function Hero() {
       style={{ minHeight: '100svh' }}
       aria-label="Introduction"
     >
-      {/* 3D Background Scene */}
-      <ErrorBoundary>
-        <Suspense fallback={<div className="absolute inset-0" style={{ background: 'var(--base)' }} />}>
-          <div className="absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
-            <Scene3D active={heroInView} />
-          </div>
-        </Suspense>
-      </ErrorBoundary>
-
-      {/* Mouse-reactive floating orb */}
-      <div
-        ref={orbRef}
-        className="absolute z-[1] pointer-events-none"
-        style={{
-          width: '600px',
-          height: '600px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(109,40,217,0.18) 0%, transparent 70%)',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          filter: 'blur(60px)',
-          transition: 'transform 0.8s cubic-bezier(0.25,0.46,0.45,0.94)',
-        }}
-        aria-hidden="true"
-      />
-
-      {/* Radial vignette */}
-      <div
-        className="absolute inset-0 z-[2] pointer-events-none"
-        aria-hidden="true"
-        style={{
-          background: 'radial-gradient(ellipse 75% 65% at 50% 50%, transparent 25%, rgba(7,7,15,0.88) 100%)',
-        }}
-      />
-
-      {/* Content */}
-      <div className="container relative z-10 flex flex-col items-center text-center pt-24">
+      {/* Content — parallax on scroll */}
+      <motion.div
+        className="hero-content container relative z-10 flex flex-col items-center text-center pt-24"
+        style={{ y: contentY, opacity: contentOpacity }}
+      >
 
         {/* Status badge */}
         <motion.div
-          className="pill mb-10 gap-2"
-          initial={{ opacity: 0, y: -24, scale: 0.9 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ delay: 0.1, duration: 0.7, ease: [0.34, 1.56, 0.64, 1] }}
+          {...(prefersReducedMotion
+            ? { initial: { opacity: 1, y: 0, scale: 1 }, animate: { opacity: 1, y: 0, scale: 1 }, transition: {} }
+            : { initial: { opacity: 0, y: -24, scale: 0.9 }, animate: { opacity: 1, y: 0, scale: 1 }, transition: { delay: 0.1, duration: 0.7, ease: [0.22, 1, 0.36, 1] } }
+          )}
+          className="hero-status"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            padding: '0.3rem 0.875rem',
+            borderRadius: '999px',
+            marginBottom: '2.5rem',
+            background: 'var(--paper-deep)',
+            border: '1px solid var(--hairline)',
+            color: 'var(--ink-soft)',
+            fontFamily: 'var(--font-mono)',
+            fontSize: 'var(--text-micro)',
+            letterSpacing: '0.08em',
+          }}
           aria-label="Status: Available for opportunities"
         >
           <span className="relative flex h-2 w-2" aria-hidden="true">
-            <span
-              className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
-              style={{ background: '#4ade80' }}
-            />
             <span className="relative inline-flex rounded-full h-2 w-2" style={{ background: '#4ade80' }} />
           </span>
           Available for opportunities
         </motion.div>
 
-        {/* Name */}
-        <div style={{ lineHeight: 1, marginBottom: '1.75rem' }}>
-          {/* "Manav" — white with a soft travelling light shimmer via ::after */}
-          <AnimatedText
-            text="Manav"
-            variant="static"
+        {/* Name + Brass Glow wrapper */}
+        <div className="hero-name-wrap relative" style={{ marginBottom: '1.75rem' }}>
+          {/* Brass Glow — behind the h1 */}
+          <motion.div
+            className="absolute pointer-events-none"
+            aria-hidden="true"
             style={{
-              fontFamily: 'Syne, sans-serif',
-              fontWeight: 800,
-              fontSize: 'clamp(3.8rem, 11vw, 9.5rem)',
-              letterSpacing: '-0.03em',
+              width: '560px',
+              height: '380px',
+              borderRadius: '50%',
+              background: 'radial-gradient(ellipse, var(--brass) 0%, transparent 70%)',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              filter: 'blur(70px)',
             }}
+            animate={prefersReducedMotion ? { opacity: 0.14 } : { opacity: [0.1, 0.18, 0.1] }}
+            transition={prefersReducedMotion ? {} : { duration: 10, repeat: Infinity, ease: [0.22, 1, 0.36, 1] }}
           />
-          {/* "Baghel" — slow animated gradient sweep */}
-          <AnimatedText
-            text="Baghel"
-            variant="gradient"
+
+          {/* A quiet ring gives the brass bloom a crisp second layer. */}
+          <div
+            className="absolute pointer-events-none"
             style={{
-              fontFamily: 'Syne, sans-serif',
-              fontWeight: 800,
-              fontSize: 'clamp(3.8rem, 11vw, 9.5rem)',
-              letterSpacing: '-0.03em',
+              width: '340px',
+              height: '340px',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
             }}
-          />
+            aria-hidden="true"
+          >
+            <motion.div
+              style={{
+                width: '100%',
+                height: '100%',
+                border: '1px solid var(--brass)',
+                borderRadius: '50%',
+              }}
+              animate={prefersReducedMotion ? { opacity: 0.16, scale: 1 } : { opacity: 0.16, scale: [1, 1.04, 1] }}
+              transition={prefersReducedMotion ? {} : { duration: 10, repeat: Infinity, ease: [0.22, 1, 0.36, 1] }}
+            />
+          </div>
+
+          {/* Name — single fade-up h1 */}
+          <motion.h1
+            className="hero-name font-display"
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'var(--text-display)',
+              color: 'var(--ink)',
+              fontWeight: 600,
+              letterSpacing: '-0.015em',
+              lineHeight: 1.05,
+              position: 'relative',
+              zIndex: 1,
+            }}
+            {...fadeUp(0)}
+          >
+            Manav Baghel
+          </motion.h1>
         </div>
 
-        {/* Role line with caret */}
+        {/* Role line */}
         <motion.div
-          className="flex items-center gap-3 mb-5"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.0, duration: 0.6 }}
+          className="hero-role flex items-center gap-3 mb-5"
+          {...fadeUp(prefersReducedMotion ? 0 : 0.15)}
         >
-          <div
-            className="h-px w-10 hidden sm:block"
-            style={{ background: 'linear-gradient(90deg, transparent, var(--accent-light))' }}
-            aria-hidden="true"
-          />
           <p
-            className="font-mono text-sm md:text-base tracking-wide"
-            style={{ color: 'var(--text-secondary)' }}
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: '0.9375rem',
+              color: 'var(--ink-soft)',
+              letterSpacing: '0.01em',
+            }}
           >
             Backend Developer &mdash;{' '}
-            <span style={{ color: 'var(--accent-light)' }}>Java</span>
+            <span style={{ color: 'var(--pine)' }}>Java</span>
             {' · '}
-            <span style={{ color: 'var(--accent-light)' }}>Spring Boot</span>
+            <span style={{ color: 'var(--pine)' }}>Spring Boot</span>
             {' · '}
-            <span style={{ color: 'var(--accent-cyan)' }}>Python</span>
+            <span style={{ color: 'var(--pine)' }}>Python</span>
             {' · '}
-            <span style={{ color: 'var(--accent-cyan)' }}>Flask</span>
-            <span className="caret" aria-hidden="true" />
+            <span style={{ color: 'var(--pine)' }}>Flask</span>
           </p>
-          <div
-            className="h-px w-10 hidden sm:block"
-            style={{ background: 'linear-gradient(90deg, var(--accent-light), transparent)' }}
-            aria-hidden="true"
-          />
         </motion.div>
 
         {/* Tagline */}
         <motion.p
-          className="text-sm md:text-base mb-12 max-w-lg"
-          style={{ color: 'var(--text-muted)', lineHeight: 1.7 }}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.15, duration: 0.6 }}
+          className="hero-tagline text-sm md:text-base mb-12 max-w-lg"
+          style={{
+            fontFamily: 'var(--font-body)',
+            color: 'var(--ink-soft)',
+            lineHeight: 1.7,
+          }}
+          {...fadeUp(prefersReducedMotion ? 0 : 0.25)}
         >
           Designing scalable REST APIs, database-backed systems, and cloud-deployed backends.
         </motion.p>
 
-        {/* Compact proof strip — enough signal without competing with the name. */}
+        {/* Metrics strip */}
         <motion.ul
-          className="hero-metrics mb-12"
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.25, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+          className="hero-metrics"
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(4, 1fr)',
+            border: '1px solid var(--hairline)',
+            background: 'var(--paper-dim)',
+            borderRadius: 'var(--radius-card)',
+            marginBottom: '3rem',
+            overflow: 'hidden',
+            listStyle: 'none',
+            padding: 0,
+            margin: '0 0 3rem 0',
+          }}
+          {...fadeUp(prefersReducedMotion ? 0 : 0.35)}
           aria-label="Selected metrics"
         >
-          {metrics.map((metric) => (
-            <li key={metric.label} className="hero-metric">
-              <span className="hero-metric-value">{metric.value}</span>
-              <span className="hero-metric-label">{metric.label}</span>
+          {metrics.map((metric, i) => (
+            <li
+              key={metric.label}
+              className="hero-metric"
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '1rem 1.25rem',
+                borderLeft: i > 0 ? '1px solid var(--hairline)' : 'none',
+              }}
+            >
+              <CountUp
+                value={metric.value}
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 'clamp(1.25rem, 2.5vw, 1.75rem)',
+                  fontWeight: 600,
+                  color: 'var(--ink)',
+                  lineHeight: 1.1,
+                  letterSpacing: '-0.02em',
+                }}
+              />
+              <span
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 'var(--text-micro)',
+                  color: 'var(--ink-faint)',
+                  marginTop: '0.25rem',
+                  letterSpacing: '0.04em',
+                }}
+              >
+                {metric.label}
+              </span>
             </li>
           ))}
         </motion.ul>
 
         {/* CTA Buttons */}
         <motion.div
-          className="flex flex-wrap gap-4 justify-center mb-16"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.3, duration: 0.6 }}
+          className="hero-actions flex flex-wrap gap-4 justify-center mb-16"
+          {...fadeUp(prefersReducedMotion ? 0 : 0.45)}
         >
-          <MagneticButton href="#projects" primary>
+          <a href="#projects" className="btn-primary">
             View My Work
-          </MagneticButton>
-          <MagneticButton href="#contact">
+          </a>
+          <a href="#contact" className="btn-ghost">
             Get In Touch
-          </MagneticButton>
-          <MagneticButton href="#" isResume>
-            Resume ↓
-          </MagneticButton>
+          </a>
         </motion.div>
 
-
-      </div>
+      </motion.div>
 
       {/* Scroll indicator */}
       <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-        initial={{ opacity: 0 }}
+        className="hero-scroll absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+        initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 2.2, duration: 0.6 }}
+        transition={prefersReducedMotion ? {} : { delay: 2.2, duration: 0.6 }}
         aria-hidden="true"
       >
-        <motion.div
-          className="w-5 h-9 rounded-full flex items-start justify-center pt-1.5"
-          style={{ border: '1px solid rgba(255,255,255,0.12)' }}
+        <div
+          style={{
+            width: '1px',
+            height: '40px',
+            background: 'var(--ink-faint)',
+            opacity: 0.7,
+          }}
+        />
+        <span
+          style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: '9px',
+            letterSpacing: '0.3em',
+            textTransform: 'uppercase',
+            color: 'var(--ink-faint)',
+          }}
         >
-          <motion.div
-            className="w-1 h-1.5 rounded-full"
-            style={{ background: 'var(--accent-cyan)' }}
-            animate={{ y: [0, 12, 0], opacity: [1, 0.2, 1] }}
-            transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
-          />
-        </motion.div>
-        <span className="font-mono text-[9px] tracking-[0.3em] uppercase" style={{ color: 'var(--text-muted)' }}>
           scroll
         </span>
       </motion.div>
     </section>
-  )
-}
-
-function MagneticButton({ href, children, primary, isResume }) {
-  const ref = useRef(null)
-
-  const onMouseMove = e => {
-    if (!ref.current) return
-    const rect = ref.current.getBoundingClientRect()
-    const x = (e.clientX - rect.left - rect.width  / 2) * 0.25
-    const y = (e.clientY - rect.top  - rect.height / 2) * 0.25
-    ref.current.style.transform = `translate(${x}px, ${y}px)`
-    ref.current.style.transition = 'transform 0.1s ease'
-  }
-
-  const onMouseLeave = () => {
-    if (!ref.current) return
-    ref.current.style.transform = 'translate(0, 0)'
-    ref.current.style.transition = 'transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1)'
-  }
-
-  const baseStyle = {
-    color: '#fff',
-    transition: 'box-shadow 0.3s ease, opacity 0.2s',
-  }
-
-  if (primary) {
-    Object.assign(baseStyle, {
-      background: 'linear-gradient(135deg, var(--accent-mid), var(--accent-light))',
-      boxShadow: '0 0 32px rgba(124,58,237,0.4), inset 0 1px 0 rgba(255,255,255,0.22)',
-    })
-  } else if (isResume) {
-    Object.assign(baseStyle, {
-      background: 'transparent',
-      border: '1px solid rgba(34,211,238,0.25)',
-      color: 'var(--accent-cyan)',
-    })
-  } else {
-    Object.assign(baseStyle, {
-      background: 'transparent',
-      border: '1px solid var(--border-glass)',
-      backdropFilter: 'blur(12px)',
-      WebkitBackdropFilter: 'blur(12px)',
-      boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.07)',
-    })
-  }
-
-  return (
-    <a
-      ref={ref}
-      href={href}
-      onClick={isResume ? e => e.preventDefault() : undefined}
-      aria-disabled={isResume ? 'true' : undefined}
-      aria-label={isResume ? 'Resume — coming soon' : undefined}
-      className="magnetic relative px-8 py-3.5 rounded-full font-semibold text-sm overflow-hidden"
-      style={baseStyle}
-      onMouseMove={onMouseMove}
-      onMouseLeave={onMouseLeave}
-      onMouseEnter={e => {
-        if (primary) e.currentTarget.style.boxShadow = '0 0 60px rgba(124,58,237,0.65), inset 0 1px 0 rgba(255,255,255,0.22)'
-        else if (!isResume) e.currentTarget.style.boxShadow = 'inset 0 1px 0 rgba(255,255,255,0.12), 0 0 24px rgba(124,58,237,0.14)'
-        else e.currentTarget.style.boxShadow = '0 0 20px rgba(34,211,238,0.25)'
-      }}
-    >
-      {children}
-    </a>
   )
 }
