@@ -4,7 +4,7 @@
 
 **Backend Developer** &nbsp;·&nbsp; Java &nbsp;·&nbsp; Spring Boot &nbsp;·&nbsp; Python &nbsp;·&nbsp; Flask
 
-A developer portfolio combining a real-time 3D hero scene, glassmorphic UI, and scroll-driven motion — built with React, Vite, and Three.js, engineered for speed as much as polish.
+A developer portfolio featuring an editorial design system, scroll-driven motion, custom cursor physics, and clean layout composition — built with React, Vite, and Tailwind CSS, engineered for speed and clarity.
 
 [**Live Demo**](https://your-portfolio.vercel.app) · [GitHub Repository](https://github.com/manav-2812/portfolio) · [Report an Issue](https://github.com/manav-2812/portfolio/issues) · [Connect on LinkedIn](https://linkedin.com/in/manav-baghel)
 
@@ -12,7 +12,6 @@ A developer portfolio combining a real-time 3D hero scene, glassmorphic UI, and 
 
 ![React](https://img.shields.io/badge/React-149ECA?style=flat-square&logo=react&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white)
-![Three.js](https://img.shields.io/badge/Three.js-000000?style=flat-square&logo=three.js&logoColor=white)
 ![Framer Motion](https://img.shields.io/badge/Framer_Motion-EF0075?style=flat-square&logo=framer&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-9333EA?style=flat-square)
@@ -49,7 +48,7 @@ A developer portfolio combining a real-time 3D hero scene, glassmorphic UI, and 
 
 ## Overview
 
-This repository contains the source for a personal developer portfolio, built to present projects, technical skills, and experience to recruiters and engineering teams in a format that reflects real front-end engineering ability, not just design taste. The interface pairs a custom Three.js hero scene with a glassmorphic design system, scroll-triggered motion built on Framer Motion, and a component architecture organized around clear separation of concerns — one file per section, shared primitives (buttons, error boundaries) extracted where reused.
+This repository contains the source for a personal developer portfolio, built to present projects, technical skills, and experience to recruiters and engineering teams in a format that reflects real engineering ability. The interface pairs a refined typographic layout with a clean design system, scroll-triggered motion built on Framer Motion, custom cursor tracking, and a component architecture organized around clear separation of concerns — with modular sections and shared primitives (like custom physics-based buttons) extracted for reusability.
 
 The project is intentionally scoped as a single-page application. There is no CMS, no blog engine, and no unnecessary abstraction layer — the goal is a fast, maintainable, content-accurate site that stays easy to update as new projects and experience are added.
 
@@ -81,36 +80,36 @@ The project is intentionally scoped as a single-page application. There is no CM
 
 ### User Experience
 
-- Interactive 3D hero scene built with React Three Fiber — mouse-reactive icosahedron, orbital rings, and a layered particle field
-- Smooth, physics-based page scrolling via Lenis
-- Active-section highlighting in the navigation bar using `IntersectionObserver`, with a scroll-progress indicator
-- Custom cursor with hover-aware states, automatically disabled on touch devices
-- Collapsible, categorized technical skills panel with icon-based skill tiles
+- **Smooth Inertial Scrolling**: Managed globally using Lenis for premium mousewheel scrolling decay.
+- **Scrollspy Gutter Gages**: Custom desktop left-gutter layout indicator (`LedgerLine`) tracking scroll progress and active viewports.
+- **Intersection-Spy Navbar**: Tracks and highlights the current section in view using a decoupled IntersectionObserver instance.
+- **Custom Tracking Cursor**: Physics-based cursor ring utilizing linear interpolation (lerp: `0.15`) that morphs size on hover states, optimized with document-level event delegation (disabled on touch devices).
+- **Collapsible, Categorized Skills**: Technical skills panel grouped by domain (languages, databases, backend, DevOps, tools) with smooth reveal states.
 
 ### Performance
 
-- Route-level code splitting: the Three.js scene is lazy-loaded via `React.lazy` and `Suspense`, keeping it out of the initial bundle
-- Manual chunk splitting in the Vite build configuration, isolating `three` / `@react-three` and `framer-motion` into dedicated vendor chunks for better browser caching
-- Device-aware 3D rendering — particle counts, geometry detail, and material sample counts scale down automatically on mobile devices to protect frame rate
-- `ErrorBoundary` wraps the 3D scene so a WebGL failure degrades gracefully instead of breaking the page
+- **Route-level Code Splitting**: Heavy viewports (Projects, Experience, and Certifications) are lazy-loaded via `React.lazy` and `Suspense` to preserve initial load speeds.
+- **Manual Chunk Splitting**: isolates Framer Motion and core vendor dependencies into dedicated vendor chunks in the Vite build config, optimizing long-term client-side caching.
+- **Render-Decoupled Coordinate Loops**: Pointer coordinates for custom cursor tracking are stored in references (`useRef`) and updated directly on the DOM inside a `requestAnimationFrame` loop, resulting in 0 React state re-renders during tracking.
+- **Passive Event Observers**: Global window scroll and resize event observers are bound with passive flags to prevent main-thread layout blocking.
 
 ### Accessibility
 
-- `prefers-reduced-motion` respected in the loading sequence and core animations
-- Visible `:focus-visible` states throughout for keyboard navigation
-- Semantic landmark structure (`<nav>`, `<section>`, `<footer>`) with ARIA labelling on interactive and list-like regions
+- **Reduced Motion Support**: Entrance animations, statistics counts, and page loading progress loops check for system-level configurations (`prefers-reduced-motion: reduce`) and bypass animations dynamically.
+- **Visible Keyboard Focus**: Custom focus ring outlines styled via `:focus-visible` to ensure seamless tab progression visibility for keyboard-only users.
+- **Semantic Landmark Structures**: Pages utilize correct landmark elements (`<nav>`, `<section>`, `<main>`, `<footer>`) combined with explicit ARIA descriptive tags on interactive sections.
 
 ### Design
 
-- A single, reusable glassmorphism recipe (blur, layered inset highlights, soft ambient shadow) applied consistently across cards, panels, and the navigation bar
-- A restrained two-accent color system (violet and cyan) with technology icons retaining their real brand colors
-- Consistent typography scale pairing a bold display font for headings with a monospace face for metadata and labels
+- **Editorial Typography Scale**: Combines *Fraunces* (Google Fonts display serif) for display titles, *Inter* (sans-serif) for body copies, and *JetBrains Mono* (monospace) for structural status tags.
+- **Sub-Pixel Borders**: Leverages thin custom design borders (`var(--hairline)`) and ambient shadows to create card separation without visual clutter.
+- **Surfaces & Texture**: CSS Turbulence fractal SVG noise overlay applied dynamically to give layouts a premium tactile paper surface.
 
 ### Developer Experience
 
-- Linted with `oxlint`, configured with `react/rules-of-hooks` enforced as an error
-- Environment-based configuration for third-party integrations (contact form submission key), kept out of version control
-- Component-per-file structure with a shared `MagneticButton` primitive for interactive call-to-action elements
+- **Oxlint Static Code Analysis**: Configured with strict hook rule checks for near-instant compiler analysis.
+- **Environment Key Gating**: Local API submit keys gated via environment configs (`.env`) to prevent credentials leakage.
+- **Separation of Concerns**: Global compositions kept separated from layout-specific logic inside specialized component folders.
 
 <br />
 
@@ -118,56 +117,57 @@ The project is intentionally scoped as a single-page application. There is no CM
 
 | Category             | Technologies                                   |
 | -------------------- | ---------------------------------------------- |
-| **Core**             | React 19, Vite 8                               |
-| **3D / WebGL**       | Three.js, React Three Fiber, @react-three/drei |
-| **Animation**        | Framer Motion, Lenis (smooth scroll)           |
-| **Styling**          | Tailwind CSS 4 (via `@tailwindcss/vite`)       |
-| **Icons**            | react-icons                                    |
+| **Core**             | React 19, Vite 8, JavaScript (ES Modules)      |
+| **Animation**        | Framer Motion 12, Lenis (smooth scroll)        |
+| **Styling**          | Vanilla CSS, Tailwind CSS 4 (via `@tailwindcss/vite`) |
+| **Icons**            | react-icons (hi2, si, fa6, vsc, tb)            |
 | **Backend Services** | Web3Forms (serverless form submission)         |
 | **Tooling**          | oxlint, Vite build with manual chunk splitting |
-| **Deployment**       | Vercel                                         |
+| **Deployment**       | Vercel / Railway                               |
 
 <br />
 
 ## Project Highlights
 
-- ✔ Interactive Three.js hero scene
-- ✔ Glassmorphism design system
-- ✔ Lazy-loaded WebGL rendering
-- ✔ Mobile-optimized 3D performance
-- ✔ SEO optimized (meta tags, Open Graph, JSON-LD, sitemap)
-- ✔ Accessibility-focused (reduced motion, focus states, semantic structure)
-- ✔ Recruiter friendly
+- ✔ Premium editorial design system
+- ✔ Linear-interpolation Custom Cursor
+- ✔ Active vertical scroll tracking line (LedgerLine)
+- ✔ Lazy-loaded layout splitting
+- ✔ Environment key gating (Web3Forms)
+- ✔ Accessibility-first styling (Reduced motion / Focus outlines)
+- ✔ Recruiter-optimized resume layout
 
 <br />
 
 ## Architecture
 
-The application is a single-page React app composed of independently scoped section components, mounted in sequence inside `App.jsx`. Smooth scrolling and section transitions are handled at the app level; each section manages its own scroll-triggered animation state independently via Framer Motion's `useInView`.
+The application is structured as a client-side Single-Page React App (SPA). Smooth scrolling and viewport scroll heights are calculated globally at the layout level; each section manages its own scroll-triggered entry transition independently via Framer Motion's Intersection Observer triggers (`useInView`).
 
 ```
-Browser
+Browser Viewport
+   │
+   ├── Lenis (Scroll Controller)
+   ├── Cursor (Independent Pointer Tracker)
+   ├── LedgerLine (Dynamic progress tracking on desktop gutter)
    │
    ▼
-main.jsx → App.jsx
+App.jsx (Client-Side Router & Layout Shell)
    │
-   ├── Lenis (smooth scroll controller)
-   ├── Loader (initial load sequence)
-   ├── Cursor (custom pointer, desktop only)
-   ├── Navbar (scrollspy + scroll-progress)
+   ├── Loader (Entrance block — locks scroll until 100% complete)
+   ├── Navbar (Scrollspy navigation updates)
    │
-   ├── Hero
-   │     └── ErrorBoundary → Suspense → Scene3D (lazy-loaded, React Three Fiber)
-   ├── About → Skills
-   ├── Projects
-   ├── Experience
-   ├── Certifications
-   ├── Contact → Web3Forms API
+   ├── main-content (Landmarks)
+   │     ├── Hero (Stat counters via CountUp)
+   │     ├── About (Profile grids)
+   │     ├── Projects (Lazy-loaded, Code-split)
+   │     ├── Experience (Lazy-loaded, Code-split)
+   │     ├── Certifications (Lazy-loaded, Code-split)
+   │     └── Contact (Secure Form submission)
    │
-   └── Footer
+   └── Footer (Social references, direct mail links)
 ```
 
-The 3D scene is isolated behind a lazy import and an error boundary specifically so a WebGL initialization failure — an older GPU, disabled hardware acceleration, a locked-down corporate machine — cannot take down the rest of the page.
+The Projects, Experience, and Certifications modules are lazy-loaded behind React's dynamic importing system (`React.lazy` + `Suspense`). This ensures the initially loaded script is lightweight, delivering fast performance metrics during the initial paint cycle.
 
 <br />
 
@@ -180,33 +180,34 @@ portfolio/
 │   └── screenshots/           # Section screenshots referenced in README
 ├── public/
 │   ├── project-previews/     # Project screenshot assets
-│   ├── favicon.svg
-│   ├── icons.svg
-│   ├── robots.txt
-│   └── sitemap.xml
+│   ├── favicon.svg           # Website favicon
+│   ├── robots.txt            # Crawl instructions
+│   └── sitemap.xml           # Site map index mapping
 ├── src/
-│   ├── assets/
+│   ├── assets/               # Local images & resume assets
+│   ├── constants/
+│   │   └── sections.js       # Section naming metadata
 │   ├── components/
-│   │   ├── Scene3D.jsx        # Three.js hero scene
-│   │   ├── ErrorBoundary.jsx  # WebGL failure fallback
-│   │   ├── Hero.jsx
-│   │   ├── Navbar.jsx         # Scrollspy + scroll-progress bar
-│   │   ├── About.jsx
-│   │   ├── Skills.jsx         # Technical skills panel
-│   │   ├── Projects.jsx
-│   │   ├── Experience.jsx
-│   │   ├── Certifications.jsx
-│   │   ├── Contact.jsx        # Web3Forms integration
-│   │   ├── MagneticButton.jsx # Shared interactive button primitive
-│   │   ├── Cursor.jsx
-│   │   └── Loader.jsx
-│   ├── App.jsx                # Section composition, Lenis setup
-│   ├── main.jsx                # React entry point
-│   └── index.css              # Design tokens, glass recipe, global styles
-├── index.html                 # Meta tags, Open Graph, JSON-LD
-├── vite.config.js             # Manual chunk splitting configuration
-└── package.json
-└── package.json
+│   │   ├── About.jsx          # Biography & focus descriptions
+│   │   ├── Certifications.jsx # Certificate visual timeline
+│   │   ├── Contact.jsx        # Web3Forms custom mail container
+│   │   ├── CountUp.jsx        # Stat RAF-based animation helper
+│   │   ├── Cursor.jsx         # Interactive pointer tracker
+│   │   ├── ErrorBoundary.jsx  # Fail-safe UI boundary
+│   │   ├── Experience.jsx     # Chronological work history timeline
+│   │   ├── Hero.jsx           # Parallax top viewport with metrics
+│   │   ├── LedgerLine.jsx     # Vertical desktop progress indicator
+│   │   ├── Loader.jsx         # Custom app entrance progress loader
+│   │   ├── MagneticButton.jsx # Spring hover physics wrapper
+│   │   ├── Navbar.jsx         # Scrollspy top navigation
+│   │   ├── NotFound.jsx       # Custom mouse-grid 404 handler
+│   │   └── Skills.jsx         # Tech stack category panels
+│   ├── App.jsx                # Composition core, client-side routing, and Lenis smooth scroll
+│   ├── main.jsx                # React entry bootstrapper
+│   └── index.css              # Reset rules, core CSS layout variables, utility classes
+├── index.html                 # Main document shell, meta tags, and structured JSON-LD Person data
+├── vite.config.js             # Rollup manual chunking & configuration plugins
+└── package.json               # Package configurations and run scripts
 ```
 
 <br />
@@ -258,48 +259,50 @@ npm run dev
 
 ## Performance
 
-The 3D scene is the single heaviest part of this application, so it is treated accordingly:
+To deliver optimal loading times and keep frames fluid, several front-end performance techniques are used:
 
-- Loaded via `React.lazy` + `Suspense`, so it never blocks first paint or delays the rest of the page from becoming interactive
-- Wrapped in an `ErrorBoundary`, so a WebGL failure fails gracefully instead of breaking the page
-- Particle counts, geometry segment detail, and material sample/resolution values are all reduced on mobile viewports rather than assuming desktop-tier GPU performance everywhere
-- `three` and `@react-three/*` are isolated into a dedicated `three-vendor` chunk, and `framer-motion` into an `animation-vendor` chunk, via manual chunk configuration in `vite.config.js` — this keeps vendor code cacheable independently of application code changes
+- **Modular Code Splitting**: Non-critical sections (`Projects`, `Experience`, `Certifications`) are loaded lazily via `React.lazy` and `Suspense` so they do not block initial painting cycles.
+- **Manual Chunk Separation**: Vite's Rollup manual chunk splits compile `framer-motion` into a distinct `animation-vendor` bundle, allowing long-term browser cache retention on client systems.
+- **Render-Decoupled Coordinates**: Pointer coordinates for the cursor ring and progress values are stored in references (`useRef`), updating DOM transforms inside a `requestAnimationFrame` loop. This avoids the cost of React state updates and reconciliation.
+- **Event Delegation**: The custom cursor listens to cursor moves via a single document-wide mousemove delegator rather than binding listeners on every interactive component.
 
 <br />
 
 ## Accessibility
 
-- `prefers-reduced-motion` is checked and respected in the loading sequence and primary animation paths
-- All interactive elements expose visible `:focus-visible` outlines for keyboard users
-- Sections use semantic landmarks (`<nav>`, `<section>`, `<footer>`), and grouped/interactive content (skill lists, navigation) carries appropriate ARIA roles and labels
+- **Reduced Motion Support**: Enforces system-level accessibility configurations (`prefers-reduced-motion: reduce`) globally across entrance loops, count-ups, and scroll transitions.
+- **Visible Focus States**: Custom `:focus-visible` ring outlines are configured throughout, ensuring keyboard focus is easily identifiable and styled to match.
+- **Semantic Hierarchy**: Utilizes proper semantic HTML5 landmarks (`<nav>`, `<section>`, `<main>`, `<footer>`) paired with explicit ARIA roles (`role="list"`, `role="listitem"`, `aria-live`) for screen-readers.
 
 <br />
 
 ## Responsive Design
 
-The layout is built with a fluid, `clamp()`-based type scale and Tailwind's responsive breakpoints throughout, tested across common desktop, laptop, tablet, and mobile viewport widths. The 3D scene and custom cursor are specifically adapted for smaller viewports — the cursor is disabled on touch devices, and 3D rendering complexity scales down below the tablet breakpoint.
+The viewport is tested across standard breakpoints (mobile, tablet, desktop) using mobile-first styles:
+- **Mobile (< 768px)**: Adapts vertical whitespace with compact padding values (`6.5rem`), transforms grids to single-column blocks, and disables the desktop-specific `Cursor` and `LedgerLine`.
+- **Tablet (768px - 1024px)**: Scales layout elements into grid structures.
+- **Desktop (> 1024px)**: Enables custom circular mouse cursors, vertical progress gauges, and multi-column visual boards.
 
 <br />
 
 ## Design Philosophy
 
-The interface is built around a small number of consistent primitives — one glassmorphism recipe, one accent color pair, one type scale — reused everywhere rather than styled per section. The intent is a site that reads as designed by a single hand rather than assembled from disconnected passes: motion is used to support hierarchy and feedback (scroll reveals, hover states, focus states), not as decoration for its own sake, and every visual decision is weighed against its cost to load time and frame rate before being kept.
+The design operates on a unified system of custom tokens (CSS variables) to enforce visual consistency across all viewports. It pairs clean typography—*Fraunces* (display), *Inter* (body), and *JetBrains Mono* (labels)—with sub-pixel card details, subtle paper grain, and spring-driven animations. Motion and page transitions are used specifically for visual hierarchy and scroll progress markers rather than decoration.
 
 <br />
 
 ## Roadmap
 
-- [ ] Expand the Projects section with additional case studies
-- [ ] Add a downloadable resume with tracked engagement
-- [ ] Introduce automated Lighthouse CI checks on deploy
-- [ ] Add unit test coverage for form submission logic
-- [ ] Add a `docs/` folder with a full visual changelog of design iterations
+- [ ] Expand the projects catalogue with additional work details
+- [ ] Configure automatic Lighthouse auditing within the CI/CD pipeline
+- [ ] Integrate full end-to-end integration test suites for contacts forms
+- [ ] Refactor icons loading into dynamic, asynchronous SVG symbols
 
 <br />
 
 ## Why This Portfolio
 
-This project exists to demonstrate software engineering ability through the artifact itself, not only through the projects it links to. Every architectural decision — lazy-loading the 3D scene, isolating vendor chunks, wrapping WebGL in an error boundary, keeping the design system to a small set of reused primitives — is chosen the same way it would be on a production codebase: for maintainability and reliability first, with visual polish built on top of that foundation rather than in place of it.
+This portfolio is structured to demonstrate code quality, accessibility, and architectural discipline. Every engineering decision—from manual Rollup code-splitting and dynamic suspense hooks to performance-optimized cursor refs and strict design systems—is modeled in the same way it would be in a production enterprise environment: emphasizing scalability, cross-browser compatibility, and performance first.
 
 <br />
 
@@ -340,7 +343,7 @@ Backend Developer · B.Tech CSE
 
 ## Acknowledgements
 
-Design direction informed by the marketing sites of [Vercel](https://vercel.com), [Linear](https://linear.app), and [Framer](https://framer.com), and by the broader [React Three Fiber](https://docs.pmnd.rs/react-three-fiber) community documentation and examples.
+Design layout concepts are inspired by premium developer platforms such as Vercel, Linear, and Stripe, alongside documentation standards from the React and Vite communities.
 
 <br />
 
