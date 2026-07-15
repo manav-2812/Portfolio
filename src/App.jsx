@@ -1,15 +1,17 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, lazy, Suspense } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Lenis from 'lenis'
-import Cursor from './components/Cursor'
+import LedgerLine from './components/LedgerLine'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import About from './components/About'
-import Projects from './components/Projects'
-import Experience from './components/Experience'
-import Certifications from './components/Certifications'
 import Contact from './components/Contact'
 import Loader from './components/Loader'
+import NotFound from './components/NotFound'
+
+const Projects = lazy(() => import('./components/Projects'))
+const Experience = lazy(() => import('./components/Experience'))
+const Certifications = lazy(() => import('./components/Certifications'))
 
 const footerNav = [
   { label: 'About',          href: '#about' },
@@ -19,11 +21,15 @@ const footerNav = [
   { label: 'Contact',        href: '#contact' },
 ]
 
-function Footer() {
+function Footer({ currentPath }) {
+  const isHome = !currentPath || currentPath === '/' || currentPath.toLowerCase() === '/index.html'
   return (
     <footer
       className="relative z-10 py-14"
-      style={{ borderTop: '1px solid var(--border-subtle)' }}
+      style={{
+        borderTop: '1px solid var(--hairline)',
+        background: 'var(--paper)',
+      }}
       aria-label="Site footer"
     >
       <div className="container">
@@ -32,34 +38,33 @@ function Footer() {
           {/* Brand */}
           <div>
             <a
-              href="#hero"
-              className="font-display font-bold text-2xl tracking-tight"
-              style={{ color: 'var(--text-primary)' }}
+              href={isHome ? "#hero" : "/"}
+              className="font-display font-bold text-2xl"
+              style={{ color: 'var(--ink)' }}
               aria-label="Manav Baghel — Back to top"
             >
-              <span style={{ color: 'var(--accent-light)' }}>M</span>
-              <span style={{ color: 'var(--text-muted)', fontWeight: 300 }}>B</span>
+              MB
             </a>
-            <p className="mt-2 text-sm max-w-xs" style={{ color: 'var(--text-muted)', lineHeight: 1.6 }}>
+            <p className="mt-2 text-sm max-w-xs" style={{ fontFamily: 'var(--font-mono)', color: 'var(--ink-faint)', lineHeight: 1.6 }}>
               Backend Developer · Open to internships &amp; full-time opportunities.
             </p>
-            <p className="mt-1 font-mono text-xs" style={{ color: 'var(--text-muted)', opacity: 0.6 }}>
-              📍 Fatehgarh Sahib, Punjab, India
+            <p className="mt-1 text-xs" style={{ fontFamily: 'var(--font-mono)', color: 'var(--ink-faint)' }}>
+              Fatehgarh Sahib, Punjab, India
             </p>
           </div>
 
           {/* Quick nav */}
           <nav aria-label="Footer navigation">
-            <p className="font-mono text-xs mb-3" style={{ color: 'var(--text-muted)' }}>Quick links</p>
+            <p className="text-xs mb-3" style={{ fontFamily: 'var(--font-mono)', color: 'var(--ink-faint)' }}>Quick links</p>
             <ul className="flex flex-wrap gap-x-6 gap-y-2 list-none" role="list">
               {footerNav.map(link => (
                 <li key={link.href}>
                   <a
-                    href={link.href}
+                    href={isHome ? link.href : `/${link.href}`}
                     className="text-sm transition-colors duration-200"
-                    style={{ color: 'var(--text-muted)' }}
-                    onMouseEnter={e => e.currentTarget.style.color = 'var(--accent-light)'}
-                    onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}
+                    style={{ color: 'var(--ink-faint)' }}
+                    onMouseEnter={e => e.currentTarget.style.color = 'var(--pine)'}
+                    onMouseLeave={e => e.currentTarget.style.color = 'var(--ink-faint)'}
                   >
                     {link.label}
                   </a>
@@ -69,18 +74,18 @@ function Footer() {
           </nav>
         </div>
 
-        {/* Glow divider */}
+        {/* Divider */}
         <div
           className="h-px w-full mb-8"
-          style={{ background: 'linear-gradient(90deg, transparent, var(--border-subtle) 30%, var(--border-subtle) 70%, transparent)' }}
+          style={{ background: 'var(--hairline)' }}
           aria-hidden="true"
         />
 
         {/* Bottom row */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>
+          <p className="text-xs" style={{ fontFamily: 'var(--font-mono)', color: 'var(--ink-faint)' }}>
             Designed &amp; Developed by{' '}
-            <span style={{ color: 'var(--accent-light)' }}>Manav Baghel</span>
+            <span style={{ color: 'var(--pine)' }}>Manav Baghel</span>
             {' '}· {new Date().getFullYear()}
           </p>
 
@@ -90,11 +95,11 @@ function Footer() {
               href="https://github.com/manav-2812"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-mono text-xs transition-colors duration-200"
-              style={{ color: 'var(--text-muted)' }}
+              className="underline-draw font-mono text-xs transition-colors duration-200"
+              style={{ color: 'var(--ink-faint)' }}
               aria-label="GitHub profile"
-              onMouseEnter={e => e.currentTarget.style.color = 'var(--accent-light)'}
-              onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}
+              onMouseEnter={e => e.currentTarget.style.color = 'var(--pine)'}
+              onMouseLeave={e => e.currentTarget.style.color = 'var(--ink-faint)'}
             >
               GitHub
             </a>
@@ -102,57 +107,59 @@ function Footer() {
               href="https://linkedin.com/in/manav-baghel"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-mono text-xs transition-colors duration-200"
-              style={{ color: 'var(--text-muted)' }}
+              className="underline-draw font-mono text-xs transition-colors duration-200"
+              style={{ color: 'var(--ink-faint)' }}
               aria-label="LinkedIn profile"
-              onMouseEnter={e => e.currentTarget.style.color = 'var(--accent-light)'}
-              onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}
+              onMouseEnter={e => e.currentTarget.style.color = 'var(--pine)'}
+              onMouseLeave={e => e.currentTarget.style.color = 'var(--ink-faint)'}
             >
               LinkedIn
             </a>
             <a
-              href="https://instagram.com/manav_baghel"
+              href="https://instagram.com/3manav_"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-mono text-xs transition-colors duration-200"
-              style={{ color: 'var(--text-muted)' }}
+              className="underline-draw font-mono text-xs transition-colors duration-200"
+              style={{ color: 'var(--ink-faint)' }}
               aria-label="Instagram profile"
-              onMouseEnter={e => e.currentTarget.style.color = '#e1306c'}
-              onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}
+              onMouseEnter={e => e.currentTarget.style.color = 'var(--pine)'}
+              onMouseLeave={e => e.currentTarget.style.color = 'var(--ink-faint)'}
             >
               Instagram
             </a>
             <a
-              href="https://x.com/manav_baghel"
+              href="https://x.com/baghell_"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-mono text-xs transition-colors duration-200"
-              style={{ color: 'var(--text-muted)' }}
+              className="underline-draw font-mono text-xs transition-colors duration-200"
+              style={{ color: 'var(--ink-faint)' }}
               aria-label="X (Twitter) profile"
-              onMouseEnter={e => e.currentTarget.style.color = 'var(--text-primary)'}
-              onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}
+              onMouseEnter={e => e.currentTarget.style.color = 'var(--pine)'}
+              onMouseLeave={e => e.currentTarget.style.color = 'var(--ink-faint)'}
             >
               X
             </a>
             <a
-              href="mailto:manavbaghhel@gmail.com"
-              className="font-mono text-xs transition-colors duration-200"
-              style={{ color: 'var(--text-muted)' }}
-              onMouseEnter={e => e.currentTarget.style.color = 'var(--accent-cyan)'}
-              onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}
+              href="https://mail.google.com/mail/?view=cm&fs=1&to=manavbaghhel@gmail.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline-draw font-mono text-xs transition-colors duration-200"
+              style={{ color: 'var(--ink-faint)' }}
+              onMouseEnter={e => e.currentTarget.style.color = 'var(--pine)'}
+              onMouseLeave={e => e.currentTarget.style.color = 'var(--ink-faint)'}
             >
               Email
             </a>
-            {/* Resume button — intentionally disabled until resume is ready */}
+            {/* Resume button */}
             <a
-              href="#"
-              onClick={e => e.preventDefault()}
-              aria-disabled="true"
-              aria-label="Resume — coming soon"
-              className="font-mono text-xs transition-colors duration-200"
-              style={{ color: 'var(--text-muted)' }}
-              onMouseEnter={e => e.currentTarget.style.color = 'var(--accent-light)'}
-              onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}
+              href="/resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="View Resume"
+              className="underline-draw font-mono text-xs transition-colors duration-200"
+              style={{ color: 'var(--ink-faint)' }}
+              onMouseEnter={e => e.currentTarget.style.color = 'var(--pine)'}
+              onMouseLeave={e => e.currentTarget.style.color = 'var(--ink-faint)'}
             >
               Resume ↓
             </a>
@@ -182,8 +189,8 @@ function ScrollTopButton() {
       aria-label="Scroll back to top"
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: visible ? 1 : 0, y: visible ? 0 : 16, pointerEvents: visible ? 'auto' : 'none' }}
-      transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
-      whileHover={{ y: -3, boxShadow: '0 4px 32px rgba(0,0,0,0.5), 0 0 32px rgba(124,58,237,0.3)' }}
+      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ y: -3 }}
       whileTap={{ scale: 0.93 }}
     >
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
@@ -195,6 +202,33 @@ function ScrollTopButton() {
 
 function App() {
   const [loading, setLoading] = useState(true)
+  const [currentPath, setCurrentPath] = useState(window.location.pathname)
+
+  useEffect(() => {
+    const handleLocationChange = () => {
+      setCurrentPath(window.location.pathname)
+    }
+
+    window.addEventListener('popstate', handleLocationChange)
+
+    const originalPushState = window.history.pushState
+    window.history.pushState = function (...args) {
+      originalPushState.apply(this, args)
+      handleLocationChange()
+    }
+
+    const originalReplaceState = window.history.replaceState
+    window.history.replaceState = function (...args) {
+      originalReplaceState.apply(this, args)
+      handleLocationChange()
+    }
+
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange)
+      window.history.pushState = originalPushState
+      window.history.replaceState = originalReplaceState
+    }
+  }, [])
 
   useEffect(() => {
     // Lenis smooth scroll — v1+ API (removed deprecated direction/smooth options)
@@ -219,34 +253,40 @@ function App() {
     setLoading(false)
   }
 
+  const isHome = currentPath === '/' || currentPath.toLowerCase() === '/index.html'
+
   return (
     <>
       <AnimatePresence mode="wait">
         {loading && <Loader key="loader" onComplete={handleLoadComplete} />}
       </AnimatePresence>
 
-      {!loading && (
-        <>
-          {/* Ambient gradient mesh + third orb */}
-          <div className="gradient-mesh" aria-hidden="true">
-            <div className="gradient-orb-3" />
-          </div>
-          <Cursor />
-          <Navbar />
-          <main id="main-content">
+      <LedgerLine />
+      <Navbar currentPath={currentPath} />
+      <main id="main-content" aria-hidden={loading || undefined}>
+        {isHome ? (
+          <>
             <Hero />
             <About />
-            <Projects />
-            <Experience />
-            <Certifications />
+            <Suspense fallback={<Loader />}>
+              <Projects />
+            </Suspense>
+            <Suspense fallback={<Loader />}>
+              <Experience />
+            </Suspense>
+            <Suspense fallback={<Loader />}>
+              <Certifications />
+            </Suspense>
             <Contact />
-          </main>
-          <Footer />
+          </>
+        ) : (
+          <NotFound onNavigate={setCurrentPath} />
+        )}
+      </main>
+      <Footer currentPath={currentPath} />
 
-          {/* Scroll-to-top button */}
-          <ScrollTopButton />
-        </>
-      )}
+      {/* Scroll-to-top button */}
+      {!loading && isHome && <ScrollTopButton />}
     </>
   )
 }
