@@ -17,10 +17,12 @@ const Experience = lazy(() => import('./components/Experience'))
 const Certifications = lazy(() => import('./components/Certifications'))
 
 const footerNav = [
-  { label: 'About',    href: '#about' },
-  { label: 'Skills',   href: '#tech-stack' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'Contact',  href: '#contact' },
+  { label: 'About',          href: '#about' },
+  { label: 'Skills',         href: '#tech-stack' },
+  { label: 'Projects',       href: '#projects' },
+  { label: 'Experience',     href: '#experience' },
+  { label: 'Certifications', href: '#certifications' },
+  { label: 'Contact',        href: '#contact' },
 ]
 
 function Footer({ currentPath }) {

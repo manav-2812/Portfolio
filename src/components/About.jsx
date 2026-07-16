@@ -196,21 +196,21 @@ export default function About() {
                   }}
                 >
                   {/* Stat: CGPA */}
-                  <div className="flex flex-col items-center flex-1 px-5 py-3" role="text" aria-label="CGPA 8.0">
+                  <div className="flex flex-col items-center flex-1 px-2 py-3 sm:px-5" role="text" aria-label="CGPA 8.0">
                     <span style={{ fontFamily: 'var(--font-display)', fontSize: '20px', fontWeight: 'bold', color: 'var(--ink)', lineHeight: 1.1 }}>8.0</span>
                     <span style={{ fontSize: '9px', color: 'var(--ink-faint)', textTransform: 'uppercase', letterSpacing: '0.06em', marginTop: '3px' }}>CGPA</span>
                   </div>
                   {/* Divider */}
                   <div style={{ width: '1px', alignSelf: 'stretch', background: 'var(--hairline)' }} />
                   {/* Stat: Apps shipped */}
-                  <div className="flex flex-col items-center flex-1 px-5 py-3" role="text" aria-label="2 Apps shipped">
+                  <div className="flex flex-col items-center flex-1 px-2 py-3 sm:px-5" role="text" aria-label="2 Apps shipped">
                     <span style={{ fontFamily: 'var(--font-display)', fontSize: '20px', fontWeight: 'bold', color: 'var(--ink)', lineHeight: 1.1 }}>02</span>
                     <span style={{ fontSize: '9px', color: 'var(--ink-faint)', textTransform: 'uppercase', letterSpacing: '0.06em', marginTop: '3px' }}>Apps shipped</span>
                   </div>
                   {/* Divider */}
                   <div style={{ width: '1px', alignSelf: 'stretch', background: 'var(--hairline)' }} />
                   {/* Stat: Graduating */}
-                  <div className="flex flex-col items-center flex-1 px-5 py-3" role="text" aria-label="Graduating in 2027">
+                  <div className="flex flex-col items-center flex-1 px-2 py-3 sm:px-5" role="text" aria-label="Graduating in 2027">
                     <span style={{ fontFamily: 'var(--font-display)', fontSize: '20px', fontWeight: 'bold', color: 'var(--ink)', lineHeight: 1.1 }}>2027</span>
                     <span style={{ fontSize: '9px', color: 'var(--ink-faint)', textTransform: 'uppercase', letterSpacing: '0.06em', marginTop: '3px' }}>Graduating</span>
                   </div>
@@ -219,13 +219,13 @@ export default function About() {
             </div>
 
             <motion.div 
-              className="col-span-12 grid sm:grid-cols-2 gap-8 mt-12"
+              className="about-card-grid col-span-12 grid sm:grid-cols-2 gap-8 mt-12"
               variants={cardGridVariants}
             >
               
               {/* Card 1: What I Build */}
               <motion.div
-                className="card glass-card relative overflow-hidden group"
+                className="about-card card glass-card relative overflow-hidden group"
                 style={{
                   borderRadius: 'var(--radius-card)',
                   border: '1px solid var(--hairline)',
@@ -298,7 +298,7 @@ export default function About() {
 
               {/* Card 2: Currently Exploring */}
               <motion.div
-                className="card glass-card relative overflow-hidden group"
+                className="about-card card glass-card relative overflow-hidden group"
                 style={{
                   borderRadius: 'var(--radius-card)',
                   border: '1px solid var(--hairline)',

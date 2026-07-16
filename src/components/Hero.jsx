@@ -121,7 +121,7 @@ export default function Hero() {
             {/* Name: Large scale, solid+outline pattern */}
             <motion.h1
               className="hero-name font-body font-black uppercase tracking-tighter select-none mb-14 flex flex-col items-start leading-[0.95]"
-              style={{ fontSize: 'clamp(4rem, 9vw, 6.75rem)', letterSpacing: '-0.02em' }}
+              style={{ fontSize: 'clamp(2.75rem, 9vw, 6.75rem)', letterSpacing: '-0.02em' }}
               variants={fadeUpItem}
               id="hero-name"
             >
