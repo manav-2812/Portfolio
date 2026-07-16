@@ -23,6 +23,7 @@ Manav Baghel is a Backend Developer based in Punjab, India. He builds scalable R
 - Docker
 - Kubernetes
 - Git
+- Github
 - Vercel
 
 ## Key Projects
