@@ -16,6 +16,7 @@ A developer portfolio featuring an editorial design system, scroll-driven motion
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-9333EA?style=flat-square)
 ![Deployed on Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000000?style=flat-square&logo=vercel&logoColor=white)
+[![Vitest](https://img.shields.io/badge/Vitest-4.1.10-729B1B?style=flat-square&logo=vitest&logoColor=white)](#)
 
 </div>
 
@@ -95,13 +96,13 @@ The project is intentionally scoped as a single-page application. There is no CM
 
 ### Accessibility
 
-- **Reduced Motion Support**: Entrance animations, statistics counts, and page loading progress loops check for system-level configurations (`prefers-reduced-motion: reduce`) and bypass animations dynamically.
+- **Reduced Motion Support**: Entrance animations, background ambient particles, and page loading progress loops check for system-level configurations (`prefers-reduced-motion: reduce`) and bypass animations dynamically.
 - **Visible Keyboard Focus**: Custom focus ring outlines styled via `:focus-visible` to ensure seamless tab progression visibility for keyboard-only users.
 - **Semantic Landmark Structures**: Pages utilize correct landmark elements (`<nav>`, `<section>`, `<main>`, `<footer>`) combined with explicit ARIA descriptive tags on interactive sections.
 
 ### Design
 
-- **Editorial Typography Scale**: Combines *Fraunces* (Google Fonts display serif) for display titles, *Inter* (sans-serif) for body copies, and *JetBrains Mono* (monospace) for structural status tags.
+- **Editorial Typography Scale**: Combines _Fraunces_ (Google Fonts display serif) for display titles, _Inter_ (sans-serif) for body copies, and _JetBrains Mono_ (monospace) for structural status tags.
 - **Sub-Pixel Borders**: Leverages thin custom design borders (`var(--hairline)`) and ambient shadows to create card separation without visual clutter.
 - **Surfaces & Texture**: CSS Turbulence fractal SVG noise overlay applied dynamically to give layouts a premium tactile paper surface.
 
@@ -115,15 +116,15 @@ The project is intentionally scoped as a single-page application. There is no CM
 
 ## Tech Stack
 
-| Category             | Technologies                                   |
-| -------------------- | ---------------------------------------------- |
-| **Core**             | React 19, Vite 8, JavaScript (ES Modules)      |
-| **Animation**        | Framer Motion 12, Lenis (smooth scroll)        |
+| Category             | Technologies                                          |
+| -------------------- | ----------------------------------------------------- |
+| **Core**             | React 19, Vite 8, JavaScript (ES Modules)             |
+| **Animation**        | Framer Motion 12, Lenis (smooth scroll)               |
 | **Styling**          | Vanilla CSS, Tailwind CSS 4 (via `@tailwindcss/vite`) |
-| **Icons**            | react-icons (hi2, si, fa6, vsc, tb)            |
-| **Backend Services** | Web3Forms (serverless form submission)         |
-| **Tooling**          | oxlint, Vite build with manual chunk splitting |
-| **Deployment**       | Vercel / Railway                               |
+| **Icons**            | react-icons (hi2, si, fa6, vsc, tb)                   |
+| **Backend Services** | Web3Forms (serverless form submission)                |
+| **Tooling**          | oxlint, Vite build with manual chunk splitting        |
+| **Deployment**       | Vercel / Railway                                      |
 
 <br />
 
@@ -157,7 +158,7 @@ App.jsx (Client-Side Router & Layout Shell)
    ├── Navbar (Scrollspy navigation updates)
    │
    ├── main-content (Landmarks)
-   │     ├── Hero (Stat counters via CountUp)
+   │     ├── Hero (Interactive constellation particle canvas)
    │     ├── About (Profile grids)
    │     ├── Projects (Lazy-loaded, Code-split)
    │     ├── Experience (Lazy-loaded, Code-split)
@@ -175,39 +176,44 @@ The Projects, Experience, and Certifications modules are lazy-loaded behind Reac
 
 ```
 portfolio/
-├── docs/
-│   ├── banner.webp            # README hero banner
-│   └── screenshots/           # Section screenshots referenced in README
 ├── public/
-│   ├── project-previews/     # Project screenshot assets
-│   ├── favicon.svg           # Website favicon
-│   ├── robots.txt            # Crawl instructions
-│   └── sitemap.xml           # Site map index mapping
+│   ├── project-previews/     # Project preview screenshots
+│   │   ├── grabbite_image.jpg
+│   │   └── synapse-workspace.png
+│   ├── apple-touch-icon.png  # Apple launcher icon
+│   ├── favicon.svg           # Website branding favicon
+│   ├── llms.txt              # LLM assistant scraping instructions
+│   ├── og-preview.png        # Open Graph preview card image
+│   ├── resume.pdf            # PDF copy of developer resume
+│   ├── robots.txt            # Search engine crawl rules
+│   └── sitemap.xml           # XML sitemap mapping URLs
 ├── src/
-│   ├── assets/               # Local images & resume assets
-│   ├── constants/
-│   │   └── sections.js       # Section naming metadata
+│   ├── assets/               # Local static assets (empty)
 │   ├── components/
 │   │   ├── About.jsx          # Biography & focus descriptions
-│   │   ├── Certifications.jsx # Certificate visual timeline
+│   │   ├── Certifications.jsx # Certificate showcase visual timeline
+│   │   ├── CommandPalette.jsx # Keyboard navigation command palette
 │   │   ├── Contact.jsx        # Web3Forms custom mail container
-│   │   ├── CountUp.jsx        # Stat RAF-based animation helper
-│   │   ├── Cursor.jsx         # Interactive pointer tracker
-│   │   ├── ErrorBoundary.jsx  # Fail-safe UI boundary
+│   │   ├── Cursor.jsx         # Interactive pointer custom cursor
 │   │   ├── Experience.jsx     # Chronological work history timeline
-│   │   ├── Hero.jsx           # Parallax top viewport with metrics
-│   │   ├── LedgerLine.jsx     # Vertical desktop progress indicator
+│   │   ├── Hero.jsx           # Parallax top viewport with layout
 │   │   ├── Loader.jsx         # Custom app entrance progress loader
 │   │   ├── MagneticButton.jsx # Spring hover physics wrapper
 │   │   ├── Navbar.jsx         # Scrollspy top navigation
 │   │   ├── NotFound.jsx       # Custom mouse-grid 404 handler
-│   │   └── Skills.jsx         # Tech stack category panels
-│   ├── App.jsx                # Composition core, client-side routing, and Lenis smooth scroll
-│   ├── main.jsx                # React entry bootstrapper
-│   └── index.css              # Reset rules, core CSS layout variables, utility classes
-├── index.html                 # Main document shell, meta tags, and structured JSON-LD Person data
-├── vite.config.js             # Rollup manual chunking & configuration plugins
-└── package.json               # Package configurations and run scripts
+│   │   ├── PremiumBackground.jsx # Dynamic constellation particle background
+│   │   ├── Projects.jsx       # Work projects grid layout
+│   │   └── TechStack.jsx      # Skills and technologies board
+│   ├── test/                 # Test suite setup and files
+│   │   ├── App.property.test.jsx
+│   │   ├── Loader.property.test.jsx
+│   │   └── setup.js
+│   ├── App.jsx                # Layout composition, navigation and Lenis scroll
+│   ├── main.jsx               # React core bootstrapper entry
+│   └── index.css              # Main tailwind and custom design system rules
+├── index.html                 # Main document HTML entry shell
+├── vite.config.js             # Vite configurations and rollup chunk splits
+└── package.json               # Package commands and dependencies list
 ```
 
 <br />
@@ -270,7 +276,7 @@ To deliver optimal loading times and keep frames fluid, several front-end perfor
 
 ## Accessibility
 
-- **Reduced Motion Support**: Enforces system-level accessibility configurations (`prefers-reduced-motion: reduce`) globally across entrance loops, count-ups, and scroll transitions.
+- **Reduced Motion Support**: Enforces system-level accessibility configurations (`prefers-reduced-motion: reduce`) globally across entrance loops, constellation animations, and scroll transitions.
 - **Visible Focus States**: Custom `:focus-visible` ring outlines are configured throughout, ensuring keyboard focus is easily identifiable and styled to match.
 - **Semantic Hierarchy**: Utilizes proper semantic HTML5 landmarks (`<nav>`, `<section>`, `<main>`, `<footer>`) paired with explicit ARIA roles (`role="list"`, `role="listitem"`, `aria-live`) for screen-readers.
 
@@ -279,6 +285,7 @@ To deliver optimal loading times and keep frames fluid, several front-end perfor
 ## Responsive Design
 
 The viewport is tested across standard breakpoints (mobile, tablet, desktop) using mobile-first styles:
+
 - **Mobile (< 768px)**: Adapts vertical whitespace with compact padding values (`6.5rem`), transforms grids to single-column blocks, and disables the desktop-specific `Cursor` and `LedgerLine`.
 - **Tablet (768px - 1024px)**: Scales layout elements into grid structures.
 - **Desktop (> 1024px)**: Enables custom circular mouse cursors, vertical progress gauges, and multi-column visual boards.
@@ -287,7 +294,7 @@ The viewport is tested across standard breakpoints (mobile, tablet, desktop) usi
 
 ## Design Philosophy
 
-The design operates on a unified system of custom tokens (CSS variables) to enforce visual consistency across all viewports. It pairs clean typography—*Fraunces* (display), *Inter* (body), and *JetBrains Mono* (labels)—with sub-pixel card details, subtle paper grain, and spring-driven animations. Motion and page transitions are used specifically for visual hierarchy and scroll progress markers rather than decoration.
+The design operates on a unified system of custom tokens (CSS variables) to enforce visual consistency across all viewports. It pairs clean typography—_Fraunces_ (display), _Inter_ (body), and _JetBrains Mono_ (labels)—with sub-pixel card details, subtle paper grain, and spring-driven animations. Motion and page transitions are used specifically for visual hierarchy and scroll progress markers rather than decoration.
 
 <br />
 
