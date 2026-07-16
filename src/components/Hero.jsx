@@ -24,24 +24,6 @@ const fadeUpItem = {
   },
 }
 
-const letterContainerVariants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.03,
-      delayChildren: 0.2,
-    }
-  }
-}
-
-const letterVariants = {
-  hidden: { y: '105%', opacity: 0 },
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
-  }
-}
 
 export default function Hero() {
   const heroRef = useRef(null)
@@ -151,7 +133,7 @@ export default function Hero() {
                 style={{ 
                   color: 'transparent',
                   WebkitTextStroke: '2px var(--ink)',
-                  opacity: 0.9,
+                  opacity: 0.15,
                   marginTop: '0.05em'
                 }}
               >
