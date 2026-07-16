@@ -174,9 +174,9 @@ function ProjectCard({ project, index, onClick, setShowComingSoon }) {
         ref={cardRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        initial={{ opacity: 0, y: 30 }}
-        animate={inView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.85, delay: index * 0.15, ease: [0.16, 1, 0.3, 1] }}
+        initial={{ opacity: 0, y: 24, filter: 'blur(3px)' }}
+        animate={inView ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
+        transition={{ duration: 0.8, delay: index * 0.12, ease: [0.25, 1, 0.5, 1] }}
         style={{
           rotateX,
           rotateY,
@@ -448,23 +448,18 @@ export default function Projects() {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.04,
-        delayChildren: 0.15,
-      }
-    }
+      transition: { staggerChildren: 0.06, delayChildren: 0.12 },
+    },
   }
 
   const staggerItem = {
-    hidden: { opacity: 0, y: 10 },
+    hidden: { opacity: 0, y: 12, filter: 'blur(3px)' },
     visible: {
       opacity: 1,
       y: 0,
-      transition: {
-        duration: 0.5,
-        ease: [0.16, 1, 0.3, 1] // Custom easeOutExpo
-      }
-    }
+      filter: 'blur(0px)',
+      transition: { duration: 0.55, ease: [0.25, 1, 0.5, 1] },
+    },
   }
 
   return (
@@ -473,10 +468,10 @@ export default function Projects() {
         {/* Section Header */}
         <motion.div
           className="mb-16 md:mb-20"
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 20, filter: 'blur(4px)' }}
+          whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
           viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.72, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.75, ease: [0.25, 1, 0.5, 1] }}
         >
           <h2
             id="projects-heading"
@@ -485,10 +480,9 @@ export default function Projects() {
           >
             <span className="block" style={{ color: 'var(--pine)' }}>Recent</span>
             <span 
-              className="block" 
+              className="block text-stroke-responsive" 
               style={{ 
                 color: 'transparent',
-                WebkitTextStroke: '2px var(--ink)',
                 opacity: 0.15,
                 marginTop: '-0.2rem'
               }}
@@ -528,14 +522,14 @@ export default function Projects() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.3, ease: [0.25, 1, 0.5, 1] }}
             >
               <motion.div 
                 className="relative w-full max-w-5xl max-h-[88vh] flex flex-col m-4 sm:m-6 rounded-xl overflow-hidden"
-                initial={{ opacity: 0, scale: 0.97, y: 12 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.97, y: 12 }}
-                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                initial={{ opacity: 0, scale: 0.96, y: 16, filter: 'blur(6px)' }}
+                animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
+                exit={{ opacity: 0, scale: 0.96, y: 16, filter: 'blur(6px)' }}
+                transition={{ duration: 0.42, ease: [0.25, 1, 0.5, 1] }}
               >
                 
                 {/* Card Container - Spacious Padding and data-lenis-prevent */}
@@ -860,10 +854,10 @@ export default function Projects() {
                   borderColor: 'var(--hairline-strong)',
                   transform: 'translateZ(0)',
                 }}
-                initial={{ opacity: 0, scale: 0.95, y: 15 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: 15 }}
-                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                initial={{ opacity: 0, scale: 0.94, y: 18, filter: 'blur(6px)' }}
+                animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
+                exit={{ opacity: 0, scale: 0.94, y: 18, filter: 'blur(6px)' }}
+                transition={{ duration: 0.42, ease: [0.25, 1, 0.5, 1] }}
                 onClick={(e) => e.stopPropagation()}
               >
                 {/* Close Button top-right */}
