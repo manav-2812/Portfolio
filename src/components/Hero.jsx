@@ -1,38 +1,51 @@
-import { useRef } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion'
 import MagneticButton from './MagneticButton'
+import useCoarsePointer from '../hooks/useCoarsePointer'
 
 
-/* ── Animation variants for staggered load ────────────────────────────────── */
+/* ── Animation variants ──────────────────────────────────────────────────── */
 const fadeUpContainer = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.15,
+      staggerChildren: 0.11,
+      delayChildren: 0.2,
     },
   },
 }
 
 const fadeUpItem = {
-  hidden: { opacity: 0, y: 16 },
+  hidden: { opacity: 0, y: 20, filter: 'blur(4px)' },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
+    filter: 'blur(0px)',
+    transition: { duration: 0.75, ease: [0.25, 1, 0.5, 1] },
   },
 }
 
 
 export default function Hero() {
+  const isCoarse = useCoarsePointer()
   const heroRef = useRef(null)
+
+  const [isLargeScreen, setIsLargeScreen] = useState(false)
+  useEffect(() => {
+    const media = window.matchMedia('(min-width: 1024px)')
+    setIsLargeScreen(media.matches)
+    const listener = (e) => setIsLargeScreen(e.matches)
+    media.addEventListener('change', listener)
+    return () => media.removeEventListener('change', listener)
+  }, [])
 
   // Motion values for premium mouse-tracking spring parallax depth
   const mouseX = useMotionValue(0)
   const mouseY = useMotionValue(0)
-  const springX = useSpring(mouseX, { damping: 50, stiffness: 140 })
-  const springY = useSpring(mouseY, { damping: 50, stiffness: 140 })
+  // Spring config — tighter damping for premium snap
+  const springX = useSpring(mouseX, { damping: 45, stiffness: 160, mass: 0.6 })
+  const springY = useSpring(mouseY, { damping: 45, stiffness: 160, mass: 0.6 })
 
   // Transform coordinates for subtle depth layers (Glow tracks further, Ring tracks closer)
   const glowX = useTransform(springX, (x) => `${x * 0.08}px`)
@@ -91,7 +104,7 @@ export default function Hero() {
         <div className="grid grid-cols-12 gap-y-12 gap-x-8 lg:gap-x-12 items-center w-full">
           {/* Left Column: text content (approx 58% width on desktop) */}
           <div className="col-span-12 lg:col-span-7 flex flex-col items-start text-left">
-            {/* Status Badge */}
+            {/* Status Badge — pulsing dot */}
             <motion.div
               variants={fadeUpItem}
               className="hero-status cursor-default select-none"
@@ -109,10 +122,17 @@ export default function Hero() {
                 fontSize: 'var(--text-micro)',
                 letterSpacing: '0.08em',
               }}
-              whileHover={{ y: -1, borderColor: 'rgba(60, 74, 63, 0.2)' }}
+              whileHover={isCoarse ? undefined : { y: -1.5, borderColor: 'rgba(60, 74, 63, 0.25)', background: 'var(--paper-dim)' }}
+              transition={{ duration: 0.25, ease: [0.25, 1, 0.5, 1] }}
               aria-label="Status: Available for opportunities"
             >
               <span className="relative flex h-2 w-2" aria-hidden="true">
+                <motion.span
+                  className="absolute inline-flex rounded-full h-2 w-2"
+                  style={{ background: 'rgba(16, 185, 129, 0.35)' }}
+                  animate={{ scale: [1, 2.2, 1], opacity: [0.6, 0, 0.6] }}
+                  transition={{ duration: 2.4, repeat: Infinity, ease: 'easeOut' }}
+                />
                 <span className="relative inline-flex rounded-full h-2 w-2" style={{ background: '#10b981' }} />
               </span>
               Available for opportunities
@@ -120,8 +140,8 @@ export default function Hero() {
 
             {/* Name: Large scale, solid+outline pattern */}
             <motion.h1
-              className="hero-name font-body font-black uppercase tracking-tighter select-none mb-14 flex flex-col items-start leading-[0.95]"
-              style={{ fontSize: 'clamp(2.75rem, 9vw, 6.75rem)', letterSpacing: '-0.02em' }}
+              className="hero-name font-body font-black uppercase tracking-tighter select-none flex flex-col items-start leading-[0.95]"
+              style={{ fontSize: 'clamp(2.75rem, 9vw, 6.75rem)', letterSpacing: '-0.02em', marginBottom: '1.75rem' }}
               variants={fadeUpItem}
               id="hero-name"
             >
@@ -129,10 +149,9 @@ export default function Hero() {
                 Manav
               </span>
               <span 
-                className="block" 
+                className="block text-stroke-responsive" 
                 style={{ 
                   color: 'transparent',
-                  WebkitTextStroke: '2px var(--ink)',
                   opacity: 0.15,
                   marginTop: '0.05em'
                 }}
@@ -169,11 +188,12 @@ export default function Hero() {
 
             {/* Tagline / Subtext */}
             <motion.p
-              className="hero-tagline text-sm md:text-base mb-28 max-w-lg"
+              className="hero-tagline text-sm md:text-base max-w-lg"
               style={{
                 fontFamily: 'var(--font-body)',
                 color: 'var(--ink-soft)',
                 lineHeight: 1.8,
+                marginBottom: '2.5rem',
               }}
               variants={fadeUpItem}
               id="hero-tagline"
@@ -184,7 +204,6 @@ export default function Hero() {
             {/* CTA Actions */}
             <motion.div
               className="hero-actions flex flex-wrap gap-4 justify-start"
-              style={{ marginTop: '3.5rem' }}
               variants={fadeUpItem}
             >
               <MagneticButton strength={10}>
@@ -200,8 +219,9 @@ export default function Hero() {
             </motion.div>
           </div>
 
-          {/* Right Column: Premium Constellation Space Design */}
-          <div className="col-span-12 lg:col-span-5 hidden lg:flex justify-center items-center relative select-none z-0" aria-hidden="true">
+           {/* Right Column: Premium Constellation Space Design */}
+          {isLargeScreen && (
+            <div className="col-span-12 lg:col-span-5 hidden lg:flex justify-center items-center relative select-none z-0" aria-hidden="true">
             {/* Enhanced ambient glow */}
             <motion.div
               className="absolute pointer-events-none"
@@ -244,7 +264,7 @@ export default function Hero() {
                 transition={{
                   duration: 4,
                   repeat: Infinity,
-                  ease: [0.16, 1, 0.3, 1],
+                  ease: 'easeInOut',
                 }}
               >
                 <div
@@ -279,7 +299,7 @@ export default function Hero() {
                     transition={{
                       duration: 4 + i * 0.5,
                       repeat: Infinity,
-                      ease: [0.16, 1, 0.3, 1],
+                      ease: 'easeInOut',
                       delay: i * 0.2,
                     }}
                   >
@@ -317,7 +337,7 @@ export default function Hero() {
                     transition={{
                       duration: 5 + i * 0.3,
                       repeat: Infinity,
-                      ease: [0.16, 1, 0.3, 1],
+                      ease: 'easeInOut',
                       delay: i * 0.25,
                     }}
                   >
@@ -355,7 +375,7 @@ export default function Hero() {
                     transition={{
                       duration: 6 + i * 0.25,
                       repeat: Infinity,
-                      ease: [0.16, 1, 0.3, 1],
+                      ease: 'easeInOut',
                       delay: i * 0.15,
                     }}
                   >
@@ -421,22 +441,23 @@ export default function Hero() {
                 })}
               </svg>
             </motion.div>
-          </div>
+            </div>
+          )}
         </div>
       </motion.div>
 
-      {/* Scroll indicator with delayed entrance */}
+      {/* Scroll indicator */}
       <motion.div
         className="hero-scroll absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.1, duration: 0.6 }}
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.4, duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
         aria-hidden="true"
       >
         <div
           style={{
             width: '1px',
-            height: '40px',
+            height: '44px',
             background: 'var(--hairline-strong)',
             position: 'relative',
             overflow: 'hidden',
@@ -448,30 +469,26 @@ export default function Hero() {
               top: 0,
               left: 0,
               width: '100%',
-              height: '16px',
+              height: '18px',
               background: 'linear-gradient(to bottom, transparent, var(--pine), transparent)',
             }}
-            animate={{
-              y: [-16, 40],
-            }}
-            transition={{
-              duration: 2.2,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
+            animate={{ y: [-18, 50] }}
+            transition={{ duration: 1.8, repeat: Infinity, ease: [0.25, 1, 0.5, 1], repeatDelay: 0.3 }}
           />
         </div>
-        <span
+        <motion.span
           style={{
             fontFamily: 'var(--font-mono)',
-            fontSize: '9px',
-            letterSpacing: '0.3em',
+            fontSize: '8px',
+            letterSpacing: '0.28em',
             textTransform: 'uppercase',
             color: 'var(--ink-faint)',
           }}
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
         >
           scroll
-        </span>
+        </motion.span>
       </motion.div>
     </section>
   )
