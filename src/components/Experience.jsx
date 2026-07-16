@@ -236,7 +236,7 @@ export default function Experience() {
 
                 <div>
                   <h3 className="font-display font-bold text-xl text-ink leading-snug">
-                    Webploot Technologies
+                    Webplat Technologies Pvt. Ltd.
                   </h3>
                   <p className="font-mono text-[10px] uppercase tracking-widest text-pine mt-1">
                     Web Development
