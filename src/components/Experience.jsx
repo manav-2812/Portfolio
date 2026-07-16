@@ -1,250 +1,281 @@
-import { motion, useInView, useScroll, useTransform } from 'framer-motion'
 import { useRef } from 'react'
-import { HiOutlineRocketLaunch, HiOutlineAcademicCap, HiOutlineBriefcase } from 'react-icons/hi2'
-import { TbBrain } from 'react-icons/tb'
+import { motion, useInView } from 'framer-motion'
 
-const timeline = [
-  {
-    year: '2023 – 2027',
-    title: 'B.Tech CSE — BBSBEC',
-    subtitle: 'Education · Fatehgarh Sahib, Punjab',
-    description:
-      'Pursuing a Bachelor of Technology in Computer Science & Engineering at Baba Banda Singh Bahadur Engineering College. Currently in the 7th semester with a CGPA of 8.0, focusing on data structures, algorithms, databases, and software engineering fundamentals.',
-    Icon: HiOutlineAcademicCap,
-    tags: ['B.Tech CSE', 'CGPA 8.0', '7th Semester'],
-  },
-  {
-    year: 'Jun – Aug 2025',
-    title: 'Webploot Technologies',
-    subtitle: 'Software Developer Intern · Python & Flask',
-    description:
-      'Completed a web development internship focused on Python and Flask. Worked on backend tasks including building and maintaining web application features, integrating with databases, and contributing to a professional development workflow.',
-    Icon: HiOutlineBriefcase,
-    tags: ['Python', 'Flask', 'Web Development'],
-  },
-  {
-    year: '2026',
-    title: 'GrabBite — Shipped',
-    subtitle: 'Personal Project · Full Stack',
-    description:
-      'Built and deployed GrabBite, a full-stack food delivery application with a Python Flask backend, PostgreSQL database, real-time WebSocket order tracking, Razorpay payment integration, and a React frontend. Deployed on Railway.',
-    Icon: HiOutlineRocketLaunch,
-    tags: ['Python', 'Flask', 'PostgreSQL', 'WebSockets', 'Docker'],
-  },
-  {
-    year: '2026',
-    title: 'Synapse — AI Study Tool',
-    subtitle: 'Personal Project · Python & AI',
-    description:
-      'Built Synapse, a Flask-based web application implementing Retrieval-Augmented Generation (RAG). Integrated ChromaDB for vector storage and the Groq LLM API to enable semantic Q&A over uploaded documents.',
-    Icon: TbBrain,
-    tags: ['Python', 'Flask', 'ChromaDB', 'RAG'],
-  },
-]
-
-/* ── Animated Timeline Line ───────────────────────────────────────────────── */
-function TimelineLine() {
-  const lineRef = useRef(null)
-  const { scrollYProgress } = useScroll({
-    target: lineRef,
-    offset: ['start 80%', 'end 20%'],
-  })
-  const scaleY = useTransform(scrollYProgress, [0, 1], [0, 1])
-
-  return (
-    <div
-      ref={lineRef}
-      className="absolute left-1/2 top-4 bottom-4 w-px -translate-x-1/2 hidden md:block"
-      aria-hidden="true"
-    >
-      {/* Background track */}
-      <div
-        className="absolute inset-0"
-        style={{ background: 'var(--hairline)' }}
-      />
-      {/* Animated fill */}
-      <motion.div
-        className="absolute top-0 left-0 right-0 origin-top"
-        style={{
-          scaleY,
-          height: '100%',
-          background: 'var(--pine)',
-          opacity: 1,
-        }}
-      />
-    </div>
-  )
-}
-
-function TimelineItem({ item, index }) {
-  const ref    = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-60px' })
-  const isLeft = index % 2 === 0
-
-  return (
-    <div
-      ref={ref}
-      className={`relative flex md:items-start gap-4 md:gap-0 ${isLeft ? 'md:flex-row' : 'md:flex-row-reverse'}`}
-    >
-      {/* Content card */}
-      <motion.div
-        className={`flex-1 group ${isLeft ? 'md:pr-14' : 'md:pl-14'}`}
-        initial={{ opacity: 0, y: 22 }}
-        animate={inView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.68, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <div
-          className="card"
-          style={{ padding: '1.75rem' }}
-        >
-          <div className="relative">
-            {/* Year badge + icon */}
-            <div className="flex items-center gap-2.5 mb-4">
-              <span
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: 'var(--text-micro)',
-                  color: 'var(--ink-faint)',
-                  padding: '0.15rem 0.5rem',
-                  border: '1px solid var(--hairline)',
-                  borderRadius: '999px',
-                }}
-              >
-                {item.year}
-              </span>
-              <item.Icon size={15} style={{ color: 'var(--pine)', opacity: 0.85 }} aria-hidden="true" />
-            </div>
-
-            <h3
-              className="font-display font-bold mb-1"
-              style={{ fontSize: 'var(--text-h2)', color: 'var(--ink)' }}
-            >
-              {item.title}
-            </h3>
-            <p
-              className="mb-4"
-              style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: 'var(--text-micro)',
-                color: 'var(--ink-faint)',
-              }}
-            >
-              {item.subtitle}
-            </p>
-            <p
-              className="text-sm leading-relaxed mb-5"
-              style={{ color: 'var(--ink-soft)' }}
-            >
-              {item.description}
-            </p>
-
-            {/* Tags */}
-            <div
-              className="flex flex-wrap gap-2"
-              role="list"
-              aria-label="Technologies"
-            >
-              {item.tags.map(tag => (
-                <span
-                  key={tag}
-                  role="listitem"
-                  style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: 'var(--text-micro)',
-                    color: 'var(--ink-faint)',
-                    border: '1px solid var(--hairline)',
-                    borderRadius: '999px',
-                    padding: '0.2rem 0.65rem',
-                    background: 'transparent',
-                  }}
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Center tick mark (desktop) */}
-      <div
-        className="hidden md:flex absolute left-1/2 -translate-x-1/2 top-7 z-10 items-center justify-center"
-        aria-hidden="true"
-      >
-        <motion.div
-          className="w-px h-3 flex-shrink-0"
-          style={{ background: 'var(--pine)' }}
-          initial={{ opacity: 0, scaleY: 0 }}
-          animate={inView ? { opacity: 1, scaleY: 1 } : {}}
-          transition={{ duration: 0.3, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-        />
-      </div>
-
-      {/* Mobile bullet */}
-      <div
-        className="md:hidden flex-shrink-0 w-1.5 h-1.5 rounded-full mt-8"
-        style={{ background: 'var(--pine)' }}
-        aria-hidden="true"
-      />
-
-      {/* Spacer */}
-      <div className="hidden md:block flex-1" aria-hidden="true" />
-    </div>
-  )
+/* ── Entrance reveal variants ───────────────────────────────────────────── */
+const revealVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.72, ease: [0.16, 1, 0.3, 1] } },
 }
 
 export default function Experience() {
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: true, margin: '-80px' })
+
+  // Dynamic mouse position tracking for card spotlight glow effects
+  const handleMouseMove = (e) => {
+    const card = e.currentTarget
+    const rect = card.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    card.style.setProperty('--mouse-x', `${x}px`)
+    card.style.setProperty('--mouse-y', `${y}px`)
+  }
+
   return (
-    <section id="experience" className="section" aria-labelledby="experience-heading">
+    <section id="experience" className="section experience-section" ref={ref} aria-labelledby="experience-heading">
       <div className="container">
-        {/* Header */}
+        
+        {/* Section Header */}
         <motion.div
-          className="mb-20"
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.72, ease: [0.22, 1, 0.36, 1] }}
+          className="mb-16 md:mb-20"
+          variants={revealVariants}
+          initial="hidden"
+          animate={inView ? 'visible' : 'hidden'}
         >
-          <div className="flex items-center gap-4 mb-4">
-            <span className="section-num" aria-hidden="true">03 / Experience</span>
-            <div className="h-px flex-1" style={{ background: 'var(--hairline)' }} aria-hidden="true" />
-          </div>
           <h2
             id="experience-heading"
-            className="font-display font-bold leading-tight"
-            style={{ fontSize: 'var(--text-h1)', color: 'var(--ink)' }}
+            className="font-body font-black uppercase tracking-tighter leading-none select-none"
+            style={{ fontSize: 'clamp(3rem, 7vw, 5.5rem)' }}
           >
-            Education &amp;{' '}
-            <span style={{ color: 'var(--pine)' }}>Experience</span>
+            <span className="block" style={{ color: 'var(--pine)' }}>Education &amp;</span>
+            <span 
+              className="block" 
+              style={{ 
+                color: 'transparent',
+                WebkitTextStroke: '2px var(--ink)',
+                opacity: 0.15,
+                marginTop: '-0.2rem'
+              }}
+            >
+              Experience
+            </span>
           </h2>
-          <p className="mt-4 max-w-lg" style={{ color: 'var(--ink-soft)', fontSize: 'var(--text-body)' }}>
-            My academic journey, personal projects, and professional experience — in chronological order.
-          </p>
         </motion.div>
 
-        {/* Timeline */}
-        <div className="relative" role="list" aria-label="Experience timeline">
-          {/* Animated vertical line — desktop */}
-          <TimelineLine />
+        {/* 2-Column Parallel Grid */}
+        <div className="grid md:grid-cols-2 gap-8 lg:gap-12 w-full max-w-5xl">
+          
+          {/* Left Column — Education */}
+          <motion.div
+            className="flex flex-col gap-6"
+            initial={{ opacity: 0, y: 24 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.72, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <motion.div
+              className="card relative overflow-hidden group transition-colors"
+              onMouseMove={handleMouseMove}
+              style={{
+                borderRadius: 'var(--radius-card)',
+                border: '1px solid var(--hairline)',
+                background: 'var(--paper-dim)',
+                padding: '2.25rem 2.5rem',
+              }}
+              whileHover={{ y: -5, borderColor: 'rgba(60, 74, 63, 0.25)' }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {/* Mouse Follow Spotlight Glow */}
+              <div
+                className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                style={{
+                  background: 'radial-gradient(circle 200px at var(--mouse-x, -999px) var(--mouse-y, -999px), rgba(174, 139, 87, 0.08) 0%, rgba(60, 74, 63, 0.03) 60%, transparent 100%)',
+                  zIndex: 0,
+                }}
+                aria-hidden="true"
+              />
 
-          {/* Vertical line — mobile */}
-          <div
-            className="absolute left-[5px] top-4 bottom-4 w-px md:hidden"
-            style={{
-              background: 'var(--pine-soft)',
-              opacity: 0.4,
-            }}
-            aria-hidden="true"
-          />
+              <div className="relative z-10 flex flex-col gap-5">
+                {/* Embedded Header */}
+                <div className="flex items-center gap-3">
+                  <span className="font-mono text-[10px] tracking-widest text-pine uppercase">Education</span>
+                  <div className="h-px flex-1 bg-hairline" style={{ background: 'var(--hairline)', opacity: 0.5 }} aria-hidden="true" />
+                </div>
+                <div className="flex justify-between items-center flex-wrap gap-2">
+                  <span
+                    style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '9px',
+                      color: 'var(--ink-soft)',
+                      border: '1px solid var(--hairline)',
+                      borderRadius: '999px',
+                      padding: '0.25rem 0.7rem',
+                      background: 'var(--paper)',
+                    }}
+                  >
+                    2023 — 2027
+                  </span>
+                  
+                  {/* Location Badge */}
+                  <span
+                    style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '9px',
+                      color: 'var(--pine)',
+                      border: '1px solid var(--pine-soft)',
+                      borderRadius: '999px',
+                      padding: '0.22rem 0.65rem',
+                      background: 'rgba(60, 74, 63, 0.06)',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em',
+                      fontWeight: 600,
+                    }}
+                  >
+                    Fatehgarh Sahib, Punjab
+                  </span>
+                </div>
 
-          <div className="flex flex-col gap-12 md:gap-16" role="list">
-            {timeline.map((item, i) => (
-              <div key={item.title} role="listitem">
-                <TimelineItem item={item} index={i} />
+                <div>
+                  <h3 className="font-display font-bold text-xl text-ink leading-snug">
+                    Baba Banda Singh Bahadur Engineering College
+                  </h3>
+                  <p className="font-mono text-[10px] uppercase tracking-widest text-pine mt-1">
+                    B.Tech Computer Science &amp; Engineering
+                  </p>
+                </div>
+
+                <p className="text-sm leading-relaxed text-ink-soft" style={{ fontFamily: 'var(--font-body)' }}>
+                  Currently in the 7th semester, maintaining an 8.0 CGPA. Focused on data structures, database systems, algorithm optimization, and backend engineering foundations.
+                </p>
+
+                {/* Animated tech tags */}
+                <div className="flex flex-wrap gap-2 mt-1" role="list" aria-label="Education metrics">
+                  {['CGPA 8.0', '7th Semester', 'CSE Core'].map(tag => (
+                    <motion.span
+                      key={tag}
+                      role="listitem"
+                      style={{
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: '9px',
+                        color: 'var(--ink-soft)',
+                        border: '1px solid var(--hairline)',
+                        borderRadius: '999px',
+                        padding: '0.25rem 0.7rem',
+                        background: 'var(--paper)',
+                        cursor: 'default',
+                        display: 'inline-block',
+                      }}
+                      whileHover={{ scale: 1.05, borderColor: 'var(--pine)', color: 'var(--ink)' }}
+                      transition={{ duration: 0.15 }}
+                    >
+                      {tag}
+                    </motion.span>
+                  ))}
+                </div>
               </div>
-            ))}
-          </div>
+            </motion.div>
+          </motion.div>
+
+          {/* Right Column — Experience */}
+          <motion.div
+            className="flex flex-col gap-6"
+            initial={{ opacity: 0, y: 24 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.72, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <motion.div
+              className="card relative overflow-hidden group transition-colors"
+              onMouseMove={handleMouseMove}
+              style={{
+                borderRadius: 'var(--radius-card)',
+                border: '1px solid var(--hairline)',
+                background: 'var(--paper-dim)',
+                padding: '2.25rem 2.5rem',
+              }}
+              whileHover={{ y: -5, borderColor: 'rgba(60, 74, 63, 0.25)' }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {/* Mouse Follow Spotlight Glow */}
+              <div
+                className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                style={{
+                  background: 'radial-gradient(circle 200px at var(--mouse-x, -999px) var(--mouse-y, -999px), rgba(174, 139, 87, 0.08) 0%, rgba(60, 74, 63, 0.03) 60%, transparent 100%)',
+                  zIndex: 0,
+                }}
+                aria-hidden="true"
+              />
+
+              <div className="relative z-10 flex flex-col gap-5">
+                {/* Embedded Header */}
+                <div className="flex items-center gap-3">
+                  <span className="font-mono text-[10px] tracking-widest text-pine uppercase">Experience</span>
+                  <div className="h-px flex-1 bg-hairline" style={{ background: 'var(--hairline)', opacity: 0.5 }} aria-hidden="true" />
+                </div>
+                <div className="flex justify-between items-center flex-wrap gap-2">
+                  <span
+                    style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '9px',
+                      color: 'var(--ink-soft)',
+                      border: '1px solid var(--hairline)',
+                      borderRadius: '999px',
+                      padding: '0.25rem 0.7rem',
+                      background: 'var(--paper)',
+                    }}
+                  >
+                    Jun — Aug 2025
+                  </span>
+                  
+                  {/* Internship Badge */}
+                  <span
+                    style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '9px',
+                      color: 'var(--pine)',
+                      border: '1px solid var(--pine-soft)',
+                      borderRadius: '999px',
+                      padding: '0.22rem 0.65rem',
+                      background: 'rgba(60, 74, 63, 0.06)',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em',
+                      fontWeight: 600,
+                    }}
+                  >
+                    Internship
+                  </span>
+                </div>
+
+                <div>
+                  <h3 className="font-display font-bold text-xl text-ink leading-snug">
+                    Webploot Technologies
+                  </h3>
+                  <p className="font-mono text-[10px] uppercase tracking-widest text-pine mt-1">
+                    Web Development
+                  </p>
+                </div>
+
+                <p className="text-sm leading-relaxed text-ink-soft" style={{ fontFamily: 'var(--font-body)' }}>
+                  Completed a web development internship focused on Python and Flask. Worked on backend tasks including building API endpoints, database interactions, and professional lifecycle controls.
+                </p>
+
+                {/* Animated tech tags */}
+                <div className="flex flex-wrap gap-2 mt-1" role="list" aria-label="Internship skills">
+                  {['Python', 'Flask', 'Web Development'].map(tag => (
+                    <motion.span
+                      key={tag}
+                      role="listitem"
+                      style={{
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: '9px',
+                        color: 'var(--ink-soft)',
+                        border: '1px solid var(--hairline)',
+                        borderRadius: '999px',
+                        padding: '0.25rem 0.7rem',
+                        background: 'var(--paper)',
+                        cursor: 'default',
+                        display: 'inline-block',
+                      }}
+                      whileHover={{ scale: 1.05, borderColor: 'var(--pine)', color: 'var(--ink)' }}
+                      transition={{ duration: 0.15 }}
+                    >
+                      {tag}
+                    </motion.span>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
         </div>
+
       </div>
     </section>
   )

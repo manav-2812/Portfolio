@@ -38,13 +38,15 @@ export default function MagneticButton({ strength = 6, children, ...rest }) {
     rawY.set(0)
   }, [rawX, rawY])
 
+  const { style: customStyle, ...otherRest } = rest
+
   return (
     <motion.div
       ref={ref}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      style={{ x, y, display: 'inline-block' }}
-      {...rest}
+      style={{ x, y, display: 'inline-block', ...customStyle }}
+      {...otherRest}
     >
       {children}
     </motion.div>

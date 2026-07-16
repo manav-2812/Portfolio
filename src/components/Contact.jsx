@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import MagneticButton from './MagneticButton'
 import { motion, useInView } from 'framer-motion'
 import {
   HiOutlineMapPin,
@@ -34,6 +35,16 @@ export default function Contact() {
   const [copied, setCopied] = useState(false)
   const statusId = 'form-status'
 
+  // Dynamic mouse position tracking for card spotlight glow effects
+  const handleMouseMove = (e) => {
+    const card = e.currentTarget
+    const rect = card.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    card.style.setProperty('--mouse-x', `${x}px`)
+    card.style.setProperty('--mouse-y', `${y}px`)
+  }
+
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText('manavbaghhel@gmail.com')
@@ -51,7 +62,6 @@ export default function Contact() {
     const form = e.currentTarget
     const data = new FormData(form)
 
-    // Key lives in .env as VITE_WEB3FORMS_KEY — never commit the real value to git
     data.append('access_key', import.meta.env.VITE_WEB3FORMS_KEY ?? '')
     data.append('subject', `Portfolio Contact: ${data.get('subject') || 'New Message'}`)
     data.append('from_name', data.get('name') || 'Portfolio Visitor')
@@ -80,336 +90,433 @@ export default function Contact() {
     <section id="contact" className="section contact-section" ref={ref} aria-labelledby="contact-heading">
       <div className="container contact-container">
 
-        {/* Header */}
+        {/* Section Header */}
         <motion.div
           className="contact-header mb-16 md:mb-20"
           initial={{ opacity: 0, y: 24 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.72, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.72, ease: [0.16, 1, 0.3, 1] }}
         >
-          <div className="flex items-center gap-4 mb-4 min-w-0">
-            <span className="section-num" aria-hidden="true">05 / Contact</span>
-            <div className="h-px flex-1 min-w-0" style={{ background: 'var(--hairline)' }} aria-hidden="true" />
-          </div>
           <h2
             id="contact-heading"
-            className="font-display font-bold leading-tight"
-            style={{ fontSize: 'var(--text-h1)', color: 'var(--ink)' }}
+            className="font-body font-black uppercase tracking-tighter leading-none select-none"
+            style={{ fontSize: 'clamp(3rem, 7vw, 5.5rem)' }}
           >
-            Let's build something great
+            <span className="block" style={{ color: 'var(--pine)' }}>Let's work</span>
+            <span 
+              className="block" 
+              style={{ 
+                color: 'transparent',
+                WebkitTextStroke: '2px var(--ink)',
+                opacity: 0.15,
+                marginTop: '-0.2rem'
+              }}
+            >
+              Together
+            </span>
           </h2>
-          <p className="mt-4 max-w-lg" style={{ color: 'var(--ink-soft)', fontSize: 'var(--text-body)' }}>
-            Open to Backend Developer internships and full-time roles. Also happy to chat about projects, technology, or collaboration.
-          </p>
         </motion.div>
 
         <div className="contact-layout grid md:grid-cols-5 gap-8 max-w-5xl w-full">
 
-          {/* Left — form (wider) */}
+          {/* Left — Form Card (Redesigned with premium container and responsive layout grid) */}
           <motion.div
             className="md:col-span-3 min-w-0"
-            initial={{ opacity: 0, y: 22 }}
+            initial={{ opacity: 0, y: 24 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.72, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
           >
-            <div className="card card-hover" style={{ borderRadius: '8px' }}>
-              {/* Form titlebar */}
-              <div
-                style={{
-                  padding: '1rem 1.5rem',
-                  borderBottom: '1px solid var(--hairline)',
-                  background: 'var(--paper-deep)',
-                  borderRadius: '7px 7px 0 0',
-                }}
-                aria-hidden="true"
-              >
-                <p style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: 'var(--text-micro)',
-                  color: 'var(--ink-faint)',
-                  letterSpacing: '0.1em',
-                }}>
-                  new_message.md
-                </p>
-              </div>
-
-              <form
-                onSubmit={handleSubmit}
-                noValidate
-                className="p-5 sm:p-8"
-                aria-label="Contact form"
-              >
-                <div className="grid sm:grid-cols-2 gap-4 mb-4">
-                  {/* Name field */}
-                  <div className="contact-field min-w-0">
-                    <label
-                      htmlFor="field-name"
-                      className="contact-label"
-                      style={{
-                        fontFamily: 'var(--font-mono)',
-                        fontSize: 'var(--text-micro)',
-                        color: 'var(--ink-faint)',
-                        letterSpacing: '0.08em',
-                        textTransform: 'uppercase',
-                        display: 'block',
-                        marginBottom: '0.35rem',
-                      }}
-                    >
-                      Name *
-                    </label>
-                    <input
-                      id="field-name"
-                      name="name"
-                      type="text"
-                      placeholder="Your name"
-                      required
-                      aria-required="true"
-                      className="contact-input"
-                    />
-                  </div>
-                  {/* Email field */}
-                  <div className="contact-field min-w-0">
-                    <label
-                      htmlFor="field-email"
-                      className="contact-label"
-                      style={{
-                        fontFamily: 'var(--font-mono)',
-                        fontSize: 'var(--text-micro)',
-                        color: 'var(--ink-faint)',
-                        letterSpacing: '0.08em',
-                        textTransform: 'uppercase',
-                        display: 'block',
-                        marginBottom: '0.35rem',
-                      }}
-                    >
-                      Email *
-                    </label>
-                    <input
-                      id="field-email"
-                      name="email"
-                      type="email"
-                      placeholder="you@example.com"
-                      required
-                      aria-required="true"
-                      className="contact-input"
-                    />
-                  </div>
-                </div>
-
-                {/* Subject field */}
-                <div className="contact-field mb-4">
+            <form
+              onSubmit={handleSubmit}
+              noValidate
+              className="relative z-10 flex flex-col gap-8 w-full"
+              aria-label="Contact form"
+            >
+              {/* Name & Email Row */}
+              <div className="grid sm:grid-cols-2 gap-8">
+                
+                {/* Name field */}
+                <div className="flex flex-col min-w-0">
                   <label
-                    htmlFor="field-subject"
-                    className="contact-label"
-                    style={{
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: 'var(--text-micro)',
-                      color: 'var(--ink-faint)',
-                      letterSpacing: '0.08em',
-                      textTransform: 'uppercase',
-                      display: 'block',
-                      marginBottom: '0.35rem',
-                    }}
+                    htmlFor="field-name"
+                    className="font-body text-xs font-semibold mb-2"
+                    style={{ color: 'var(--ink-soft)' }}
                   >
-                    Subject
+                    Name
                   </label>
                   <input
-                    id="field-subject"
-                    name="subject"
+                    id="field-name"
+                    name="name"
                     type="text"
-                    placeholder="What's this about?"
-                    className="contact-input"
-                  />
-                </div>
-
-                {/* Message field */}
-                <div className="contact-field mb-7">
-                  <label
-                    htmlFor="message-field"
-                    className="contact-label"
-                    style={{
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: 'var(--text-micro)',
-                      color: 'var(--ink-faint)',
-                      letterSpacing: '0.08em',
-                      textTransform: 'uppercase',
-                      display: 'block',
-                      marginBottom: '0.35rem',
-                    }}
-                  >
-                    Message *
-                  </label>
-                  <textarea
-                    id="message-field"
-                    name="message"
-                    rows={5}
-                    placeholder="Tell me about the role, project, or opportunity..."
+                    placeholder="Your Name"
                     required
                     aria-required="true"
-                    className="contact-input contact-textarea"
+                    className="block w-full text-sm border transition-all duration-200 outline-none"
+                    style={{
+                      borderColor: 'var(--hairline-strong)',
+                      background: 'var(--paper-deep)',
+                      color: 'var(--ink)',
+                      padding: '1.15rem 1.5rem',
+                      borderRadius: '12px'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = 'var(--pine)'
+                      e.target.style.boxShadow = '0 0 0 3px rgba(60, 74, 63, 0.15)'
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = 'var(--hairline-strong)'
+                      e.target.style.boxShadow = 'none'
+                    }}
                   />
                 </div>
 
-                <button
-                  type="submit"
-                  className="btn-primary w-full justify-center"
-                  disabled={status === 'sending'}
-                  aria-busy={status === 'sending'}
-                  aria-describedby={statusId}
-                  aria-label={status === 'sending' ? 'Sending message' : undefined}
-                >
-                  <span className={`submit-label${status === 'sending' ? ' is-loading' : ''}`}>
-                    {status === 'sending' ? 'Sending…' :
-                     status === 'sent' ? 'Message sent!' :
-                     status === 'error' ? 'Try again' :
-                     'Send Message'}
-                  </span>
-                  {status === 'sending' && <span className="submit-spinner" aria-hidden="true" />}
-                </button>
+                {/* Email field */}
+                <div className="flex flex-col min-w-0">
+                  <label
+                    htmlFor="field-email"
+                    className="font-body text-xs font-semibold mb-2"
+                    style={{ color: 'var(--ink-soft)' }}
+                  >
+                    Email
+                  </label>
+                  <input
+                    id="field-email"
+                    name="email"
+                    type="email"
+                    placeholder="Your@email.com"
+                    required
+                    aria-required="true"
+                    className="block w-full text-sm border transition-all duration-200 outline-none"
+                    style={{
+                      borderColor: 'var(--hairline-strong)',
+                      background: 'var(--paper-deep)',
+                      color: 'var(--ink)',
+                      padding: '1.15rem 1.5rem',
+                      borderRadius: '12px'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = 'var(--pine)'
+                      e.target.style.boxShadow = '0 0 0 3px rgba(60, 74, 63, 0.15)'
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = 'var(--hairline-strong)'
+                      e.target.style.boxShadow = 'none'
+                    }}
+                  />
+                </div>
+              </div>
 
-                <p
-                  id={statusId}
-                  role="status"
-                  aria-live="polite"
-                  style={{
-                    marginTop: '0.75rem',
-                    fontSize: 'var(--text-caption)',
-                    minHeight: '1.25rem',
-                    color: status === 'sending'
-                      ? 'var(--ink-soft)'
-                      : status === 'sent'
-                      ? 'var(--pine)'
-                      : status === 'error'
-                      ? '#8B3A3A'
-                      : 'transparent',
-                  }}
+              {/* Subject field */}
+              <div className="flex flex-col">
+                <label
+                  htmlFor="field-subject"
+                  className="font-body text-xs font-semibold mb-2"
+                  style={{ color: 'var(--ink-soft)' }}
                 >
-                  {status === 'sent' ? 'Your message is on its way — thank you.' :
-                   status === 'error' ? 'Something went wrong. Please try again in a moment.' :
-                   status === 'sending' ? 'Connecting to the message service…' : ''}
-                </p>
-              </form>
-            </div>
+                  Subject
+                </label>
+                <input
+                  id="field-subject"
+                  name="subject"
+                  type="text"
+                  placeholder="What is this about?"
+                  className="block w-full text-sm border transition-all duration-200 outline-none"
+                  style={{
+                    borderColor: 'var(--hairline-strong)',
+                    background: 'var(--paper-deep)',
+                    color: 'var(--ink)',
+                    padding: '1.15rem 1.5rem',
+                    borderRadius: '12px'
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = 'var(--pine)'
+                    e.target.style.boxShadow = '0 0 0 3px rgba(60, 74, 63, 0.15)'
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = 'var(--hairline-strong)'
+                    e.target.style.boxShadow = 'none'
+                  }}
+                />
+              </div>
+
+              {/* Message field */}
+              <div className="flex flex-col">
+                <label
+                  htmlFor="message-field"
+                  className="font-body text-xs font-semibold mb-2"
+                  style={{ color: 'var(--ink-soft)' }}
+                >
+                  Message
+                </label>
+                <textarea
+                  id="message-field"
+                  name="message"
+                  rows={5}
+                  placeholder="Message"
+                  required
+                  aria-required="true"
+                  className="block w-full text-sm border transition-all duration-200 outline-none resize-y min-h-[9rem]"
+                  style={{
+                    borderColor: 'var(--hairline-strong)',
+                    background: 'var(--paper-deep)',
+                    color: 'var(--ink)',
+                    padding: '1.15rem 1.5rem',
+                    borderRadius: '12px'
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = 'var(--pine)'
+                    e.target.style.boxShadow = '0 0 0 3px rgba(60, 74, 63, 0.15)'
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = 'var(--hairline-strong)'
+                    e.target.style.boxShadow = 'none'
+                  }}
+                />
+              </div>
+
+              {/* Submit button */}
+              <div className="flex flex-col gap-4 mt-2">
+                <MagneticButton strength={6} className="w-full" style={{ display: 'block', width: '100%' }}>
+                  <motion.button
+                    type="submit"
+                    className="w-full justify-center flex items-center gap-2 text-sm font-bold tracking-wide transition-all duration-200 cursor-pointer"
+                    disabled={status === 'sending'}
+                    aria-busy={status === 'sending'}
+                    aria-describedby={statusId}
+                    style={{
+                      background: 'var(--pine)',
+                      color: 'var(--paper)',
+                      border: 'none',
+                      padding: '1.2rem 2rem',
+                      borderRadius: '12px',
+                      display: 'flex',
+                    }}
+                    whileHover={{ 
+                      y: -2,
+                      background: 'var(--pine-soft)',
+                    }}
+                    whileTap={{ scale: 0.99 }}
+                  >
+                    <span>
+                      {status === 'sending' ? 'Sending…' :
+                       status === 'sent' ? 'Sent!' :
+                       status === 'error' ? 'Failed' :
+                       'Submit'}
+                    </span>
+                  </motion.button>
+                </MagneticButton>
+
+                <div className="min-h-[1.25rem] flex items-center justify-center">
+                  <p
+                    id={statusId}
+                    role="status"
+                    aria-live="polite"
+                    style={{
+                      fontSize: 'var(--text-caption)',
+                      fontFamily: 'var(--font-mono)',
+                      color: status === 'sending'
+                        ? 'var(--ink-soft)'
+                        : status === 'sent'
+                        ? 'var(--pine)'
+                        : status === 'error'
+                        ? '#8B3A3A'
+                        : 'transparent',
+                    }}
+                  >
+                    {status === 'sent' ? 'Your message is on its way — thank you.' :
+                     status === 'error' ? 'Connection failed. Please retry.' :
+                     status === 'sending' ? 'Connecting to message server…' : ''}
+                  </p>
+                </div>
+              </div>
+            </form>
           </motion.div>
 
-          {/* Right — info */}
+          {/* Right — Info Cards Stack */}
           <motion.div
-            className="md:col-span-2 min-w-0 flex flex-col gap-5"
+            className="md:col-span-2 min-w-0 flex flex-col gap-6"
             initial={{ opacity: 0, x: 36 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.72, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
           >
-            {/* Email card */}
-            <div
-              className="card card-hover"
+            {/* Email Card */}
+            <motion.div
+              className="card relative overflow-hidden group transition-colors"
+              onMouseMove={handleMouseMove}
               style={{
                 background: 'var(--paper-dim)',
                 border: '1px solid var(--hairline)',
                 borderRadius: 'var(--radius-card)',
                 padding: '1.75rem',
               }}
+              whileHover={{ y: -5, borderColor: 'rgba(60, 74, 63, 0.25)' }}
+              transition={{ duration: 0.25 }}
             >
-              <p
-                className="font-mono text-xs mb-3"
-                style={{ color: 'var(--ink-faint)' }}
-              >
-                Preferred contact
-              </p>
-              <div className="flex items-center justify-between gap-3 mb-1">
-                <a
-                  href="https://mail.google.com/mail/?view=cm&fs=1&to=manavbaghhel@gmail.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-mono text-sm font-medium block truncate"
-                  style={{ color: 'var(--pine)' }}
-                >
-                  manavbaghhel@gmail.com
-                </a>
-                <button
-                  onClick={handleCopy}
-                  className="px-2.5 py-1 rounded-lg flex items-center gap-1.5 font-mono select-none flex-shrink-0"
-                  style={{
-                    border: '1px solid var(--hairline)',
-                    background: 'transparent',
-                    color: 'var(--ink-faint)',
-                    fontSize: '0.65rem',
-                    transition: 'color 0.2s var(--ease-editorial)',
-                    cursor: 'pointer',
-                  }}
-                  title="Copy email to clipboard"
-                  aria-label={copied ? 'Email copied!' : 'Copy email address'}
-                >
-                  {copied ? 'Copied!' : 'Copy'}
-                </button>
-              </div>
-              <p className="text-xs" style={{ color: 'var(--ink-faint)' }}>
-                Usually replies within 24 hours
-              </p>
-            </div>
+              {/* Mouse Follow Spotlight Glow */}
+              <div
+                className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                style={{
+                  background: 'radial-gradient(circle 160px at var(--mouse-x, -999px) var(--mouse-y, -999px), rgba(174, 139, 87, 0.1) 0%, rgba(60, 74, 63, 0.04) 60%, transparent 100%)',
+                  zIndex: 0,
+                }}
+                aria-hidden="true"
+              />
 
-            {/* Location card */}
-            <div
-              className="card card-hover"
-              style={{
-                background: 'var(--paper-dim)',
-                border: '1px solid var(--hairline)',
-                borderRadius: 'var(--radius-card)',
-                padding: '1.25rem 1.5rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '1rem',
-              }}
-            >
-              <HiOutlineMapPin size={20} style={{ color: 'var(--pine-soft)', flexShrink: 0 }} aria-hidden="true" />
-              <div>
-                <p className="font-semibold text-sm" style={{ color: 'var(--ink)' }}>
-                  Fatehgarh Sahib, Punjab
+              <div className="relative z-10">
+                <p
+                  className="font-mono text-[9px] uppercase tracking-widest mb-3"
+                  style={{ color: 'var(--ink-faint)' }}
+                >
+                  Preferred contact
                 </p>
-                <p className="text-xs mt-0.5" style={{ color: 'var(--ink-faint)' }}>India · Open to remote</p>
+                <div className="flex items-center justify-between gap-3 mb-1">
+                  <a
+                    href="https://mail.google.com/mail/?view=cm&fs=1&to=manavbaghhel@gmail.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-mono text-sm font-semibold block truncate min-w-0"
+                    style={{ color: 'var(--pine)', transition: 'color 0.2s' }}
+                  >
+                    manavbaghhel@gmail.com
+                  </a>
+                  <MagneticButton strength={4}>
+                    <motion.button
+                      onClick={handleCopy}
+                      className="select-none flex-shrink-0 cursor-pointer text-center"
+                      style={{
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: 'var(--text-micro)',
+                        color: copied ? 'var(--pine)' : 'var(--ink-soft)',
+                        border: '1px solid',
+                        borderColor: copied ? 'var(--pine)' : 'var(--hairline)',
+                        borderRadius: '999px',
+                        padding: '0.2rem 0.65rem',
+                        background: copied ? 'rgba(60, 74, 63, 0.08)' : 'var(--paper)',
+                        transition: 'border-color 0.15s, background-color 0.15s, color 0.15s',
+                      }}
+                      whileHover={{ 
+                        scale: 1.05,
+                        borderColor: 'var(--pine)',
+                        color: copied ? 'var(--pine)' : 'var(--ink)'
+                      }}
+                      whileTap={{ scale: 0.95 }}
+                      title="Copy email to clipboard"
+                      aria-label={copied ? 'Email copied!' : 'Copy email address'}
+                    >
+                      {copied ? 'Copied!' : 'Copy'}
+                    </motion.button>
+                  </MagneticButton>
+                </div>
+                <p className="text-xs" style={{ color: 'var(--ink-faint)' }}>
+                  Usually replies within 24 hours
+                </p>
               </div>
-            </div>
+            </motion.div>
 
-            {/* Availability card */}
-            <div
-              className="card card-hover"
+            {/* Location Card */}
+            <motion.div
+              className="card relative overflow-hidden group transition-colors"
+              onMouseMove={handleMouseMove}
+              style={{
+                background: 'var(--paper-dim)',
+                border: '1px solid var(--hairline)',
+                borderRadius: 'var(--radius-card)',
+                padding: '1.5rem',
+              }}
+              whileHover={{ y: -5, borderColor: 'rgba(60, 74, 63, 0.25)' }}
+              transition={{ duration: 0.25 }}
+            >
+              {/* Mouse Follow Spotlight Glow */}
+              <div
+                className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                style={{
+                  background: 'radial-gradient(circle 160px at var(--mouse-x, -999px) var(--mouse-y, -999px), rgba(174, 139, 87, 0.1) 0%, rgba(60, 74, 63, 0.04) 60%, transparent 100%)',
+                  zIndex: 0,
+                }}
+              />
+
+              <div className="relative z-10 flex items-center gap-4">
+                <HiOutlineMapPin size={22} style={{ color: 'var(--pine)', flexShrink: 0 }} aria-hidden="true" />
+                <div>
+                  <p className="font-semibold text-sm" style={{ color: 'var(--ink)' }}>
+                    Fatehgarh Sahib, Punjab
+                  </p>
+                  <p className="text-xs mt-0.5" style={{ color: 'var(--ink-faint)' }}>India · Open to remote</p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Availability Card (Seeking roles) */}
+            <motion.div
+              className="card relative overflow-hidden group transition-colors"
+              onMouseMove={handleMouseMove}
               style={{
                 background: 'var(--paper-dim)',
                 border: '1px solid var(--hairline)',
                 borderRadius: 'var(--radius-card)',
                 padding: '1.75rem',
               }}
+              whileHover={{ y: -5, borderColor: 'rgba(60, 74, 63, 0.25)' }}
+              transition={{ duration: 0.25 }}
             >
-              <div className="flex items-center gap-2 mb-3">
-                <span className="relative flex h-2.5 w-2.5" aria-hidden="true">
-                  <span
-                    className="relative inline-flex rounded-full h-2.5 w-2.5"
-                    style={{ background: 'var(--pine)' }}
-                  />
-                </span>
-                <span className="font-mono text-xs" style={{ color: 'var(--pine)' }}>Available now</span>
-              </div>
-              <p className="font-semibold mb-1" style={{ color: 'var(--ink)' }}>
-                Seeking Backend Developer roles
-              </p>
-              <p className="text-sm" style={{ color: 'var(--ink-soft)' }}>
-                Internships &amp; full-time opportunities
-              </p>
-            </div>
+              {/* Mouse Follow Spotlight Glow */}
+              <div
+                className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                style={{
+                  background: 'radial-gradient(circle 160px at var(--mouse-x, -999px) var(--mouse-y, -999px), rgba(174, 139, 87, 0.1) 0%, rgba(60, 74, 63, 0.04) 60%, transparent 100%)',
+                  zIndex: 0,
+                }}
+              />
 
-            {/* Social links */}
-            <div className="flex flex-wrap gap-4" aria-label="Social profiles">
+              <div className="relative z-10">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="relative flex h-2.5 w-2.5" aria-hidden="true">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#4ade80] opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#22c55e]" />
+                  </span>
+                  <span className="font-mono text-[9px] uppercase tracking-widest" style={{ color: 'var(--pine)' }}>
+                    Available now
+                  </span>
+                </div>
+                <p className="font-semibold mb-1" style={{ color: 'var(--ink)' }}>
+                  Seeking Backend Developer roles
+                </p>
+                <p className="text-sm" style={{ color: 'var(--ink-soft)' }}>
+                  Internships &amp; full-time opportunities
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Social profiles links bar */}
+            <div className="flex flex-wrap gap-2.5" aria-label="Social profiles">
               {socials.map(s => (
-                <a
-                  key={s.name}
-                  href={s.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`Visit ${s.name} profile`}
-                  className="underline-draw font-mono text-xs"
-                  style={{ color: 'var(--ink-soft)' }}
-                >
-                  {s.name}
-                </a>
+                <MagneticButton key={s.name} strength={1.5}>
+                  <motion.a
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Visit ${s.name} profile`}
+                    className="select-none flex-shrink-0 cursor-pointer block text-center"
+                    style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: 'var(--text-micro)',
+                      color: 'var(--ink-soft)',
+                      border: '1px solid var(--hairline)',
+                      borderRadius: '999px',
+                      padding: '0.25rem 0.7rem',
+                      background: 'var(--paper)',
+                      transition: 'border-color 0.15s, background-color 0.15s, color 0.15s',
+                    }}
+                    whileHover={{
+                      scale: 1.05,
+                      borderColor: 'var(--pine)',
+                      color: 'var(--ink)',
+                    }}
+                    whileTap={{ scale: 0.96 }}
+                  >
+                    {s.name}
+                  </motion.a>
+                </MagneticButton>
               ))}
             </div>
           </motion.div>

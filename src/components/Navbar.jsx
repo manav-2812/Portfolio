@@ -1,12 +1,12 @@
 import { useEffect, useState, useRef } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+import MagneticButton from './MagneticButton'
 
 const navLinks = [
-  { label: 'About',          href: '#about',          id: 'about' },
-  { label: 'Projects',       href: '#projects',       id: 'projects' },
-  { label: 'Experience',     href: '#experience',     id: 'experience' },
-  { label: 'Certifications', href: '#certifications', id: 'certifications' },
-  { label: 'Contact',        href: '#contact',        id: 'contact' },
+  { label: 'About',    href: '#about',      id: 'about' },
+  { label: 'Skills',   href: '#tech-stack', id: 'tech-stack' },
+  { label: 'Projects', href: '#projects',   id: 'projects' },
+  { label: 'Contact',  href: '#contact',    id: 'contact' },
 ]
 
 export default function Navbar({ currentPath }) {
@@ -15,6 +15,7 @@ export default function Navbar({ currentPath }) {
   const [hidden, setHidden]               = useState(false)
   const [activeSection, setActiveSection] = useState('hero')
   const [scrollPct, setScrollPct]         = useState(0)
+  const [hoveredIndex, setHoveredIndex]   = useState(null)
   const lastY = useRef(0)
 
   useEffect(() => {
@@ -58,29 +59,38 @@ export default function Navbar({ currentPath }) {
         className="fixed top-0 left-0 right-0 z-[999]"
         initial={{ y: -80 }}
         animate={{ y: hidden ? -80 : 0 }}
-        transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
         aria-label="Main navigation"
       >
         <div className={`navbar-surface${scrolled ? ' is-scrolled' : ''}`}>
           <div className="container flex items-center justify-between h-16">
             {/* Logo */}
-            <a
+            <motion.a
               href={isHome ? "#hero" : "/"}
-              className="font-display font-bold text-xl tracking-tight"
+              className="font-display font-bold text-xl tracking-tight block"
               style={{ color: 'var(--ink)' }}
-              aria-label="Manav Baghel — Back to top"
+              whileHover={{ scale: 1.06 }}
+              whileTap={{ scale: 0.94 }}
+              aria-label="MB — Manav Baghel Back to top"
             >
               MB
-            </a>
+            </motion.a>
 
             {/* Desktop nav links */}
-            <ul className="hidden lg:flex items-center gap-8 list-none" role="list">
-              {navLinks.map(link => (
-                <li key={link.href}>
+            <ul
+              className="hidden lg:flex items-center list-none relative p-1 rounded-full"
+              style={{ gap: '0.5rem' }}
+              role="list"
+              onMouseLeave={() => setHoveredIndex(null)}
+            >
+              {navLinks.map((link, idx) => (
+                <li key={link.href} className="relative">
                   <NavLink
                     href={isHome ? link.href : `/${link.href}`}
                     label={link.label}
                     active={isHome && activeSection === link.id}
+                    hovered={hoveredIndex === idx}
+                    onHover={() => setHoveredIndex(idx)}
                   />
                 </li>
               ))}
@@ -88,13 +98,15 @@ export default function Navbar({ currentPath }) {
 
             {/* CTA buttons */}
             <div className="hidden lg:flex items-center gap-3">
-              <div>
-                <a
+              <MagneticButton strength={2}>
+                <motion.a
                   href="/resume.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="View Resume"
                   className="btn-primary text-xs px-5 py-2 rounded-full flex items-center gap-1.5"
+                  whileHover={{ y: -1.5 }}
+                  whileTap={{ scale: 0.95 }}
                 >
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -102,17 +114,19 @@ export default function Navbar({ currentPath }) {
                     <line x1="12" y1="15" x2="12" y2="3"/>
                   </svg>
                   Resume
-                </a>
-              </div>
+                </motion.a>
+              </MagneticButton>
 
-              <div>
-                <a
+              <MagneticButton strength={2}>
+                <motion.a
                   href={isHome ? "#contact" : "/#contact"}
                   className="btn-primary text-xs px-5 py-2 rounded-full"
+                  whileHover={{ y: -1.5 }}
+                  whileTap={{ scale: 0.95 }}
                 >
                   Hire Me
-                </a>
-              </div>
+                </motion.a>
+              </MagneticButton>
             </div>
 
             {/* Mobile menu */}
@@ -124,26 +138,42 @@ export default function Navbar({ currentPath }) {
   )
 }
 
-function NavLink({ href, label, active }) {
+function NavLink({ href, label, active, hovered, onHover }) {
   return (
     <a
       href={href}
-      className="relative text-sm font-medium underline-draw"
+      className="relative text-sm font-medium text-center"
       style={{
-        color: active ? 'var(--ink)' : 'var(--ink-soft)',
-        transition: 'color 200ms',
+        display: 'block',
+        padding: '0.95rem 1.25rem',
+        borderRadius: '999px',
+        color: active ? 'var(--pine)' : 'var(--ink-soft)',
+        transition: 'color 0.25s var(--ease-editorial)',
+        textDecoration: 'none',
       }}
-      onMouseEnter={e => { if (!active) e.currentTarget.style.color = 'var(--ink)' }}
-      onMouseLeave={e => { if (!active) e.currentTarget.style.color = 'var(--ink-soft)' }}
+      onMouseEnter={onHover}
     >
-      {label}
-      {/* Shared layoutId underline — slides between active links */}
+      {/* Sliding Hover Pill */}
+      {hovered && (
+        <motion.span
+          layoutId="nav-hover-pill"
+          className="absolute inset-0 z-0 rounded-full"
+          style={{ background: 'rgba(60, 74, 63, 0.06)' }}
+          transition={{ type: 'spring', stiffness: 350, damping: 28 }}
+        />
+      )}
+
+      <span className="relative z-10" style={{ color: active ? 'var(--pine)' : hovered ? 'var(--ink)' : 'inherit' }}>
+        {label}
+      </span>
+      
+      {/* Shared layoutId dot indicator — slides between active links */}
       {active && (
         <motion.span
-          layoutId="nav-underline"
-          className="absolute -bottom-0.5 left-0 right-0 h-px"
+          layoutId="nav-active-dot"
+          className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full z-10"
           style={{ background: 'var(--pine)' }}
-          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ type: 'spring', stiffness: 350, damping: 28 }}
           aria-hidden="true"
         />
       )}
@@ -158,7 +188,8 @@ function MobileMenu({ activeSection, isHome }) {
     <div className="lg:hidden">
       <button
         onClick={() => setOpen(!open)}
-        className="flex flex-col gap-1.5 p-2"
+        className="flex flex-col gap-1.5 items-center justify-center flex-shrink-0"
+        style={{ width: '44px', height: '44px', minWidth: '44px', minHeight: '44px' }}
         aria-label={open ? 'Close navigation menu' : 'Open navigation menu'}
         aria-expanded={open}
         aria-controls="mobile-menu"
@@ -173,7 +204,7 @@ function MobileMenu({ activeSection, isHome }) {
               y:       open ? (i === 0 ? 6  : i === 2 ? -6  : 0) : 0,
               opacity: open && i === 1 ? 0 : 1,
             }}
-            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
           />
         ))}
       </button>
@@ -191,7 +222,7 @@ function MobileMenu({ activeSection, isHome }) {
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
           >
             <ul className="flex flex-col gap-1 p-4 list-none" role="list">
           {navLinks.map(link => (
@@ -199,7 +230,7 @@ function MobileMenu({ activeSection, isHome }) {
               <a
                 href={isHome ? link.href : `/${link.href}`}
                 onClick={() => setOpen(false)}
-                className="flex items-center gap-2 py-2.5 px-3 text-sm font-medium rounded-lg transition-all duration-150"
+                className="flex items-center gap-2 py-3 px-3 text-sm font-medium rounded-lg transition-all duration-150"
                 style={{
                   color: isHome && activeSection === link.id ? 'var(--pine)' : 'var(--ink-soft)',
                   background: isHome && activeSection === link.id ? 'var(--paper-dim)' : 'transparent',
@@ -218,14 +249,14 @@ function MobileMenu({ activeSection, isHome }) {
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setOpen(false)}
-              className="btn-primary flex-1 py-2.5 px-3 text-sm font-semibold rounded-lg text-center justify-center flex items-center gap-1.5"
+              className="btn-primary flex-1 py-3 px-3 text-sm font-semibold rounded-lg text-center justify-center flex items-center gap-1.5"
             >
               Resume ↓
             </a>
             <a
               href={isHome ? "#contact" : "/#contact"}
               onClick={() => setOpen(false)}
-              className="btn-primary flex-1 py-2.5 px-3 text-sm font-semibold rounded-lg text-center justify-center"
+              className="btn-primary flex-1 py-3 px-3 text-sm font-semibold rounded-lg text-center justify-center"
             >
               Hire Me
             </a>

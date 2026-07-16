@@ -51,7 +51,7 @@ export default function NotFound({ onNavigate }) {
   const fadeIn = (delay = 0) => ({
     initial: { opacity: 0, y: 15 },
     animate: { opacity: 1, y: 0 },
-    transition: { delay, duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+    transition: { delay, duration: 0.6, ease: [0.16, 1, 0.3, 1] },
   })
 
   return (
@@ -128,7 +128,7 @@ export default function NotFound({ onNavigate }) {
         <motion.div
           {...fadeIn(0)}
           className="mb-6 font-mono text-xs uppercase tracking-widest"
-          style={{ color: 'var(--brass)', fontFamily: 'var(--font-mono)' }}
+          style={{ color: 'var(--pine)', fontFamily: 'var(--font-mono)' }}
         >
           System Code: 404 // ROUTE_UNRESOLVED
         </motion.div>

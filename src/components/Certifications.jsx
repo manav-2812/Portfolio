@@ -1,8 +1,6 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { SiHackerrank } from 'react-icons/si'
 import { HiOutlineArrowUpRight } from 'react-icons/hi2'
-import CountUp from './CountUp'
 
 /* ── Cert data ─────────────────────────────────────────────────────────── */
 const certifications = [
@@ -10,159 +8,220 @@ const certifications = [
     id: 'deloitte',
     issuer: 'Deloitte',
     IssuerIcon: null,
-    issuerInitial: 'D',
     year: '2026',
+    accentColor: '#00A3E0', // Deloitte blue
     certs: [
       {
         name: 'Technology Job Simulation',
         type: 'Job Simulation',
         link: 'https://www.theforage.com/completion-certificates/9PBTqmSxAf6zZTseP/udmxiyHeqYQLkTPvf_9PBTqmSxAf6zZTseP_6a36683ad4508269f5c396de_1781953593391_completion_certificate.pdf',
-        description: 'Software engineering tasks, problem decomposition, and professional development in a technology consulting context.',
+        description: 'Software engineering task prioritization, problem decomposition, and technology consulting deliverables.',
       },
     ],
   },
   {
     id: 'hackerrank',
     issuer: 'HackerRank',
-    IssuerIcon: SiHackerrank,
-    issuerInitial: 'H',
     year: '2026',
+    accentColor: '#2EC866', // HackerRank green
     certs: [
       {
         name: 'REST API',
         type: 'Intermediate',
         link: 'https://www.hackerrank.com/certificates/79cba608187f',
-        description: 'RESTful API design, HTTP methods, status codes, and API consumption.',
+        description: 'RESTful API design, standard HTTP response codes, query parsing, and endpoints architecture.',
       },
       {
         name: 'Software Engineer Intern',
         type: 'Assessment',
         link: 'https://www.hackerrank.com/certificates/fb2eb20eb5e0',
-        description: 'Data structures, algorithms, and core programming concepts.',
+        description: 'Core assessment covering data structures, algorithmic design, and problem solving efficiency.',
       },
       {
         name: 'SQL',
         type: 'Intermediate',
         link: 'https://www.hackerrank.com/certificates/7a366fe416f2',
-        description: 'JOINs, subqueries, aggregation, and query optimization.',
+        description: 'Advanced query constructs, complex JOIN relations, subquery optimization, and aggregations.',
       },
       {
         name: 'Problem Solving',
         type: 'Intermediate',
         link: 'https://www.hackerrank.com/certificates/5bf3432878f5',
-        description: 'Algorithmic thinking and data structure proficiency.',
+        description: 'Validated proficiency in sorting algorithms, string parsing, search, and dynamic arrays.',
       },
     ],
   },
 ]
 
-/* ── Card variants ─────────────────────────────────────────────────────── */
-const cardVariants = {
-  hidden:  { opacity: 0, y: 20 },
-  visible: (i) => ({
-    opacity: 1, y: 0,
-    transition: { duration: 0.65, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] },
-  }),
+/* ── Entrance animations ────────────────────────────────────────────────── */
+const revealVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] } 
+  },
 }
 
-/* ── Section reveal variants ───────────────────────────────────────────── */
-const revealVariants = {
-  hidden:  { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.72, ease: [0.22, 1, 0.36, 1] } },
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.12,
+    },
+  },
+}
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 24 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] },
+  },
 }
 
 /* ── Single cert card ──────────────────────────────────────────────────── */
-function CertCard({ cert, issuerData, globalIndex, animate }) {
-  const { IssuerIcon, issuerInitial, issuer, year } = issuerData
+function CertCard({ cert, issuerData }) {
+  const { issuer, year } = issuerData
+
+  // Track mouse coordinates for premium spotlight glow
+  const handleMouseMove = (e) => {
+    const card = e.currentTarget
+    const rect = card.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    card.style.setProperty('--mouse-x', `${x}px`)
+    card.style.setProperty('--mouse-y', `${y}px`)
+  }
 
   return (
-    <motion.div
-      custom={globalIndex}
-      variants={cardVariants}
-      initial="hidden"
-      animate={animate}
-    >
-      <a
+    <motion.a
       href={cert.link}
       target="_blank"
       rel="noopener noreferrer"
       aria-label={`View ${cert.name} certificate from ${issuer}`}
-      className="card card-hover group relative flex flex-col"
+      className="card relative overflow-hidden group flex flex-col h-full"
+      onMouseMove={handleMouseMove}
       style={{
         borderRadius: 'var(--radius-card)',
+        border: '1px solid var(--hairline)',
+        background: 'var(--paper-dim)',
         textDecoration: 'none',
       }}
-      >
-      <div className="flex flex-col flex-1 p-5 gap-4">
-        {/* Row 1 — issuer badge + verified label + link arrow */}
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2.5">
-            {/* Issuer icon badge — 32×32px flat square */}
-            <div
+      whileHover={{
+        y: -6,
+        borderColor: 'var(--pine-soft)',
+        boxShadow: '0 12px 30px -10px rgba(25, 23, 20, 0.05)',
+      }}
+      transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+    >
+      {/* Neutral Pine Accent Mouse Follow Spotlight Glow */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        style={{
+          background: 'radial-gradient(circle 220px at var(--mouse-x, -999px) var(--mouse-y, -999px), rgba(60, 74, 63, 0.08) 0%, rgba(60, 74, 63, 0.01) 60%, transparent 100%)',
+          zIndex: 0,
+        }}
+        aria-hidden="true"
+      />
+
+      <div className="relative z-10 flex flex-col flex-1 py-8 px-8 sm:px-10 gap-5">
+        {/* Row 1 — issuer pill + year pill + verified status pill */}
+        <div className="flex items-center justify-between gap-2 mb-1">
+          <div className="flex items-center gap-2 min-w-0">
+            {/* Issuer Pill */}
+            <span
               style={{
-                width: '2rem',
-                height: '2rem',
+                fontFamily: 'var(--font-mono)',
+                fontSize: '9px',
+                color: 'var(--ink-soft)',
                 border: '1px solid var(--hairline)',
-                borderRadius: '4px',
-                display: 'flex',
+                borderRadius: '999px',
+                padding: '0.25rem 0.7rem',
+                background: 'var(--paper)',
+                textTransform: 'uppercase',
+                letterSpacing: '0.04em',
+                flexShrink: 0,
+                display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                background: 'var(--paper-deep)',
-                flexShrink: 0,
+                lineHeight: 1,
               }}
-              aria-hidden="true"
             >
-              {IssuerIcon
-                ? <IssuerIcon size={14} style={{ color: 'var(--ink-soft)' }} />
-                : <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--ink-soft)' }}>{issuerInitial}</span>
-              }
-            </div>
-
-            {/* Issuer name + year */}
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--text-micro)', color: 'var(--ink-faint)' }}>
-              {issuer} · {year}
+              {issuer}
+            </span>
+            
+            {/* Year Pill */}
+            <span
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: '9px',
+                color: 'var(--ink-soft)',
+                border: '1px solid var(--hairline)',
+                borderRadius: '999px',
+                padding: '0.25rem 0.7rem',
+                background: 'var(--paper)',
+                textTransform: 'uppercase',
+                letterSpacing: '0.04em',
+                flexShrink: 0,
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                lineHeight: 1,
+              }}
+            >
+              {year}
             </span>
           </div>
 
-          {/* Verified label — plain mono span */}
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--text-micro)', color: 'var(--ink-faint)', letterSpacing: '0.08em', flexShrink: 0 }}>
-            Verified
-          </span>
+          {/* Verified Text */}
+          <div className="flex items-center font-mono text-[9px] uppercase tracking-widest text-pine flex-shrink-0">
+            <span>Verified</span>
+          </div>
         </div>
 
-        {/* Row 2 — cert title (grows to fill) */}
+        {/* Row 2 — cert title + description */}
         <div className="flex-1">
-          <h4
+          <h3
+            className="transition-colors duration-250 font-display font-bold text-xl text-ink leading-snug"
             style={{
-              fontFamily: 'var(--font-display)',
-              color: 'var(--ink)',
-              fontSize: 'var(--text-body-lg)',
+              fontSize: '1rem',
               fontWeight: 600,
-              lineHeight: 1.25,
+              lineHeight: 1.3,
             }}
           >
             {cert.name}
-          </h4>
+          </h3>
           <p
             className="mt-1.5 text-xs leading-relaxed line-clamp-2"
-            style={{ color: 'var(--ink-faint)', fontFamily: 'var(--font-body)' }}
+            style={{ color: 'var(--ink-soft)', fontFamily: 'var(--font-body)' }}
           >
             {cert.description}
           </p>
         </div>
 
-        {/* Row 3 — type tag + link arrow */}
-        <div className="flex items-center justify-between gap-2 mt-auto">
-          {/* Type tag — mono pill */}
+        {/* Row 3 — normal type text + link arrow */}
+        <div className="flex items-center justify-between gap-2 mt-auto pt-1">
+          {/* Normal type text */}
           <span
             style={{
               fontFamily: 'var(--font-mono)',
-              fontSize: 'var(--text-micro)',
-              color: 'var(--ink-faint)',
+              fontSize: '9px',
+              color: 'var(--ink-soft)',
               border: '1px solid var(--hairline)',
               borderRadius: '999px',
-              padding: '0.2rem 0.65rem',
-              background: 'transparent',
+              padding: '0.25rem 0.7rem',
+              background: 'var(--paper)',
+              textTransform: 'uppercase',
+              letterSpacing: '0.06em',
+              fontWeight: 500,
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              lineHeight: 1,
             }}
           >
             {cert.type}
@@ -170,15 +229,14 @@ function CertCard({ cert, issuerData, globalIndex, animate }) {
 
           {/* Animated link arrow */}
           <span
-            className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+            className="translate-x-[-4px] opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300 ease-out"
             aria-hidden="true"
           >
-            <HiOutlineArrowUpRight size={12} style={{ color: 'var(--ink-soft)' }} />
+            <HiOutlineArrowUpRight size={13} style={{ color: 'var(--pine)' }} />
           </span>
         </div>
       </div>
-      </a>
-    </motion.div>
+    </motion.a>
   )
 }
 
@@ -186,7 +244,6 @@ function CertCard({ cert, issuerData, globalIndex, animate }) {
 export default function Certifications() {
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-80px' })
-  const totalCerts = certifications.reduce((n, g) => n + g.certs.length, 0)
 
   // Flatten with global index for stagger
   const flatCerts = certifications.flatMap(issuerData =>
@@ -194,107 +251,64 @@ export default function Certifications() {
   )
 
   return (
-    <section id="certifications" className="section" ref={ref} aria-labelledby="certs-heading">
+    <section 
+      id="certifications" 
+      className="section" 
+      ref={ref} 
+      aria-labelledby="certs-heading"
+    >
       <div className="container">
 
         {/* Header */}
         <motion.div
-          className="mb-20"
+          className="mb-16 md:mb-20"
           variants={revealVariants}
           initial="hidden"
           animate={inView ? 'visible' : 'hidden'}
         >
-          <div className="flex items-center gap-4 mb-4">
-            <span className="section-num" aria-hidden="true">04 / Certifications</span>
-            <div className="h-px flex-1" style={{ background: 'var(--hairline)' }} aria-hidden="true" />
-          </div>
           <h2
             id="certs-heading"
-            style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 'var(--text-h1)',
-              color: 'var(--ink)',
-              fontWeight: 700,
-              lineHeight: 1.1,
-            }}
+            className="font-body font-black uppercase tracking-tighter leading-none select-none"
+            style={{ fontSize: 'clamp(3rem, 7vw, 5.5rem)' }}
           >
-            Verified credentials
+            <span className="block" style={{ color: 'var(--pine)' }}>Verified</span>
+            <span 
+              className="block" 
+              style={{ 
+                color: 'transparent',
+                WebkitTextStroke: '2px var(--ink)',
+                opacity: 0.15,
+                marginTop: '-0.2rem'
+              }}
+            >
+              Credentials
+            </span>
           </h2>
-          <p
-            className="mt-4 max-w-lg"
-            style={{ color: 'var(--ink-soft)', fontSize: 'var(--text-body)', fontFamily: 'var(--font-body)' }}
-          >
-            Industry certifications validating core software engineering and backend development skills.
-          </p>
         </motion.div>
 
-        {/* Stat strip */}
+        {/* Cards Grid Layout — matches Projects and Experience structure exactly */}
         <motion.div
-          className="flex items-center gap-8 mb-12"
-          variants={revealVariants}
+          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full"
+          variants={containerVariants}
           initial="hidden"
           animate={inView ? 'visible' : 'hidden'}
-          transition={{ delay: 0.1 }}
-        >
-          {[
-            { value: totalCerts,             label: 'Total Credentials' },
-            { value: certifications.length,  label: 'Issuing Organisations' },
-            { value: 100, suffix: '%',       label: 'Verified' },
-          ].map(({ value, suffix, label }) => (
-            <div key={label} className="flex flex-col">
-              <CountUp
-                value={value}
-                suffix={suffix}
-                style={{
-                  fontFamily: 'var(--font-display)',
-                  fontWeight: 700,
-                  fontSize: '1.5rem',
-                  color: 'var(--ink)',
-                }}
-              />
-              <span
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: 'var(--text-micro)',
-                  color: 'var(--ink-faint)',
-                  marginTop: '0.125rem',
-                }}
-              >
-                {label}
-              </span>
-            </div>
-          ))}
-          <div className="h-px flex-1" style={{ background: 'var(--hairline)' }} aria-hidden="true" />
-          <a
-            href="https://linkedin.com/in/manav-baghel"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline-draw font-mono text-xs flex items-center gap-1.5 flex-shrink-0"
-            style={{ color: 'var(--pine)' }}
-            aria-label="View all credentials on LinkedIn"
-          >
-            View on LinkedIn
-            <HiOutlineArrowUpRight size={12} aria-hidden="true" />
-          </a>
-        </motion.div>
-
-        {/* Cards — unified grid, all certs side-by-side */}
-        <div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
           role="list"
           aria-label="Certifications"
         >
-          {flatCerts.map(({ cert, issuerData }, i) => (
-            <div key={`${issuerData.id}-${cert.name}`} role="listitem">
+          {flatCerts.map(({ cert, issuerData }) => (
+            <motion.div
+              key={`${issuerData.id}-${cert.name}`}
+              variants={cardVariants}
+              role="listitem"
+              className="w-full h-full"
+            >
               <CertCard
                 cert={cert}
                 issuerData={issuerData}
-                globalIndex={i}
-                animate={inView ? 'visible' : 'hidden'}
               />
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
       </div>
     </section>

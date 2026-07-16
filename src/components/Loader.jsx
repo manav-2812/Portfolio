@@ -10,7 +10,7 @@ export default function Loader({ onComplete }) {
       const t = setTimeout(() => onComplete?.(), 80)
       return () => clearTimeout(t)
     }
-    const duration = 680
+    const duration = 950
     let frameId, resolveTimer, completeTimer
     const startedAt = performance.now()
     const tick = (now) => {
@@ -40,7 +40,7 @@ export default function Loader({ onComplete }) {
           style={{ background: 'var(--paper)' }}
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
           aria-label="Loading portfolio"
           aria-live="polite"
         >
