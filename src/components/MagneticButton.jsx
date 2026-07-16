@@ -22,6 +22,9 @@ export default function MagneticButton({ strength = 6, children, ...rest }) {
   const y = useSpring(rawY, { stiffness: 200, damping: 18, mass: 0.5 })
 
   const handleMouseMove = useCallback((e) => {
+    if (typeof window !== 'undefined' && window.matchMedia('(hover: none), (pointer: coarse)').matches) {
+      return
+    }
     const el = ref.current
     if (!el) return
     const rect = el.getBoundingClientRect()

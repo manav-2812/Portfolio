@@ -20,8 +20,8 @@ const projects = [
     challenge:
       'Keep checkout, restaurant updates, and a live delivery state coherent without making the ordering experience feel slow or fragile.',
     outcome:
-      'A deployable product flow that pairs real-time WebSockets with a Flask API, PostgreSQL persistence, Razorpay payments, and a React client.',
-    tech: ['Python', 'Flask', 'PostgreSQL', 'WebSockets', 'Razorpay', 'React', 'Docker'],
+      'A deployable product flow that pairs real-time WebSockets with a Flask API, PostgreSQL persistence, and Razorpay payments.',
+    tech: ['Python', 'Flask', 'PostgreSQL', 'WebSockets', 'Razorpay', 'Railway'],
     preview: '/project-previews/grabbite_image.jpg',
     previewAlt: 'Abstract food delivery dashboard with menus and live route tracking',
     github: 'https://github.com/manav-2812/Grabbite',
@@ -74,8 +74,8 @@ const projects = [
     challenge:
       'Turn mixed document uploads into concise answers while preserving context and keeping the retrieval flow understandable to users.',
     outcome:
-      'A focused Flask and React experience that combines document ingestion, ChromaDB vector search, LangChain orchestration, and Groq responses.',
-    tech: ['Python', 'Flask', 'ChromaDB', 'Groq API', 'LangChain', 'RAG', 'React'],
+      'A focused FastAPI experience that combines document ingestion, ChromaDB vector search, LangChain orchestration, and Groq responses.',
+    tech: ['Python', 'FastAPI', 'ChromaDB', 'Groq API', 'LangChain', 'RAG', 'Docker'],
     preview: '/project-previews/synapse-workspace.png',
     previewAlt: 'Abstract AI document workspace with vector nodes and answer panel',
     github: 'https://github.com/manav-2812/Synapse',
@@ -130,7 +130,7 @@ const projects = [
 const springConfig = { stiffness: 90, damping: 22 }
 
 /* ─── Project Card (3D Tilt & Parallax Elements) ─── */
-function ProjectCard({ project, index, onClick }) {
+function ProjectCard({ project, index, onClick, setShowComingSoon }) {
   const cardRef = useRef(null)
   const inView = useInView(cardRef, { once: true, margin: '-80px' })
 
@@ -143,6 +143,9 @@ function ProjectCard({ project, index, onClick }) {
   const scale = useSpring(1, springConfig)
 
   const handleMouseMove = (e) => {
+    if (typeof window !== 'undefined' && window.matchMedia('(hover: none), (pointer: coarse)').matches) {
+      return
+    }
     const card = cardRef.current
     if (!card) return
     const rect = card.getBoundingClientRect()
@@ -297,7 +300,13 @@ function ProjectCard({ project, index, onClick }) {
                     href={project.live}
                     target="_blank"
                     rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      if (project.id === 'synapse') {
+                        e.preventDefault()
+                        setShowComingSoon(true)
+                      }
+                    }}
                     className="btn-ghost text-[9px] uppercase tracking-widest px-3.5 py-1.5 rounded-full flex items-center gap-1 font-bold"
                     style={{
                       borderColor: 'var(--hairline-strong)',
@@ -324,13 +333,14 @@ function ProjectCard({ project, index, onClick }) {
 
 export default function Projects() {
   const [activeProject, setActiveProject] = useState(null)
+  const [showComingSoon, setShowComingSoon] = useState(false)
   const closeBtnRef = useRef(null)
   const lastActiveElement = useRef(null)
   const modalRef = useRef(null)
 
   // Scroll lock when modal is open
   useEffect(() => {
-    if (activeProject) {
+    if (activeProject || showComingSoon) {
       document.body.style.overflow = 'hidden'
     } else {
       document.body.style.overflow = ''
@@ -338,7 +348,20 @@ export default function Projects() {
     return () => {
       document.body.style.overflow = ''
     }
-  }, [activeProject])
+  }, [activeProject, showComingSoon])
+
+  // Escape key handler for Coming Soon modal
+  useEffect(() => {
+    if (!showComingSoon) return
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setShowComingSoon(false)
+        e.preventDefault()
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [showComingSoon])
 
   // Focus management, tab trap, escape close, and background inert isolation
   useEffect(() => {
@@ -483,6 +506,7 @@ export default function Projects() {
               project={project}
               index={index}
               onClick={() => setActiveProject(project)}
+              setShowComingSoon={setShowComingSoon}
             />
           ))}
         </div>
@@ -568,6 +592,12 @@ export default function Projects() {
                               href={activeProject.live}
                               target="_blank"
                               rel="noopener noreferrer"
+                              onClick={(e) => {
+                                if (activeProject.id === 'synapse') {
+                                  e.preventDefault()
+                                  setShowComingSoon(true)
+                                }
+                              }}
                               className="btn-ghost text-[10px] uppercase tracking-widest px-4 py-2 rounded-full flex items-center gap-1.5 font-bold"
                               style={{ fontSize: '9px', background: 'transparent', borderColor: 'var(--hairline-strong)' }}
                             >
@@ -770,6 +800,12 @@ export default function Projects() {
                               href={activeProject.live}
                               target="_blank"
                               rel="noopener noreferrer"
+                              onClick={(e) => {
+                                if (activeProject.id === 'synapse') {
+                                  e.preventDefault()
+                                  setShowComingSoon(true)
+                                }
+                              }}
                               className="btn-ghost text-[9px] uppercase tracking-widest px-4 py-2 rounded-full flex items-center gap-1.5 font-bold"
                               style={{ background: 'transparent', borderColor: 'var(--hairline-strong)' }}
                             >
@@ -788,6 +824,102 @@ export default function Projects() {
                   </div>
                 </motion.div>
 
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
+
+      {/* Coming Soon Modal */}
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {showComingSoon && (
+            <motion.div
+              className="modal-backdrop"
+              style={{
+                position: 'fixed',
+                inset: 0,
+                background: 'rgba(25, 23, 20, 0.40)',
+                backdropFilter: 'blur(8px)',
+                zIndex: 99999,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '1.5rem',
+              }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowComingSoon(false)}
+            >
+              <motion.div
+                className="bg-paper border border-hairline w-full max-w-md rounded-xl p-8 shadow-2xl relative flex flex-col items-center text-center"
+                style={{
+                  background: 'rgba(250, 248, 244, 0.98)',
+                  borderColor: 'var(--hairline-strong)',
+                  transform: 'translateZ(0)',
+                }}
+                initial={{ opacity: 0, scale: 0.95, y: 15 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 15 }}
+                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Close Button top-right */}
+                <button
+                  onClick={() => setShowComingSoon(false)}
+                  className="absolute top-4 right-4 p-2 rounded-full hover:bg-[rgba(25,23,20,0.05)] transition-colors cursor-pointer"
+                  style={{ color: 'var(--ink-soft)' }}
+                  aria-label="Close message"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+
+                {/* Clock / Coming soon Accent Icon */}
+                <div 
+                  className="mb-5 flex items-center justify-center rounded-full"
+                  style={{
+                    width: '48px',
+                    height: '48px',
+                    border: '1px solid var(--hairline-strong)',
+                    background: 'rgba(60, 74, 63, 0.05)',
+                    color: 'var(--pine)',
+                  }}
+                >
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg>
+                </div>
+
+                {/* Content */}
+                <h3 
+                  className="font-display font-bold text-2xl mb-3"
+                  style={{ color: 'var(--ink)' }}
+                >
+                  Coming Soon
+                </h3>
+                
+                <p 
+                  className="text-sm leading-relaxed text-ink-soft mb-6 max-w-[280px]"
+                  style={{ fontFamily: 'var(--font-body)' }}
+                >
+                  Synapse is currently undergoing deployment. The live demonstration environment will be available shortly.
+                </p>
+
+                {/* Premium Button */}
+                <MagneticButton strength={4}>
+                  <button
+                    onClick={() => setShowComingSoon(false)}
+                    className="btn-primary text-[10px] uppercase tracking-widest px-6 py-2.5 rounded-full font-bold cursor-pointer"
+                  >
+                    Understood
+                  </button>
+                </MagneticButton>
               </motion.div>
             </motion.div>
           )}
