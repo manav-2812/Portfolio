@@ -272,7 +272,7 @@ export default function About() {
 
                 <div className="relative z-10 mt-6">
                   <ul className="flex flex-col list-none p-0 m-0">
-                    {WHAT_I_BUILD.map((item, idx) => (
+                    {WHAT_I_BUILD.map((item) => (
                       <li 
                         key={item}
                         className="text-[13px] leading-relaxed text-ink-soft py-[9px] hover:text-ink transition-colors duration-200 flex items-center gap-2"
@@ -345,7 +345,7 @@ export default function About() {
 
                 <div className="relative z-10 mt-6">
                   <ul className="flex flex-col list-none p-0 m-0">
-                    {CURRENTLY_EXPLORING.map((item, idx) => (
+                    {CURRENTLY_EXPLORING.map((item) => (
                       <li 
                         key={item}
                         className="text-[13px] leading-relaxed text-ink-soft py-[9px] hover:text-ink transition-colors duration-200 flex items-center gap-2"

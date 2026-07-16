@@ -112,17 +112,7 @@ function comesBefore(nodeA, nodeB) {
   return (nodeA.compareDocumentPosition(nodeB) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0
 }
 
-/**
- * Given a rendered container and a list of testids (in expected order),
- * returns the ordered list of elements that ARE present in the DOM.
- * If an element is not found, its slot is skipped (for suspended sections
- * the loader fallback occupies the slot instead).
- */
-function getRenderedOrder(container, testids) {
-  return testids
-    .map((id) => container.querySelector(`[data-testid="${id}"]`))
-    .filter(Boolean)
-}
+
 
 // ─── The six-element ordered sequence we always expect ───────────────────────
 // When a lazy section is suspended its loader fallback renders in its slot.
