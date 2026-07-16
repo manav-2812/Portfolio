@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import MagneticButton from './MagneticButton'
 import { motion, useInView } from 'framer-motion'
+import useCoarsePointer from '../hooks/useCoarsePointer'
 import {
   HiOutlineMapPin,
 } from 'react-icons/hi2'
@@ -29,11 +30,44 @@ const socials = [
 ]
 
 export default function Contact() {
+  const isCoarse = useCoarsePointer()
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-80px' })
   const [status, setStatus] = useState(null) // 'sending' | 'sent' | 'error'
   const [copied, setCopied] = useState(false)
   const statusId = 'form-status'
+
+  const [errors, setErrors] = useState({ name: '', email: '', subject: '', message: '' })
+  const [activeField, setActiveField] = useState(null)
+
+  const handleInputChange = (fieldName) => {
+    if (errors[fieldName]) {
+      setErrors(prev => ({ ...prev, [fieldName]: '' }))
+    }
+  }
+
+  const getInputStyle = (fieldName) => {
+    const hasError = !!errors[fieldName]
+    const isFocused = activeField === fieldName
+
+    return {
+      borderColor: hasError 
+        ? '#C85A3F' 
+        : isFocused 
+          ? 'var(--pine)' 
+          : 'var(--hairline-strong)',
+      boxShadow: isFocused 
+        ? hasError 
+          ? '0 0 0 3px rgba(200, 90, 63, 0.15)' 
+          : '0 0 0 3px rgba(60, 74, 63, 0.15)' 
+        : 'none',
+      background: 'var(--paper-deep)',
+      color: 'var(--ink)',
+      padding: '1.15rem 1.5rem',
+      borderRadius: '12px',
+      transition: 'border-color 0.2s, box-shadow 0.2s',
+    }
+  }
 
   // Dynamic mouse position tracking for card spotlight glow effects
   const handleMouseMove = (e) => {
@@ -57,10 +91,47 @@ export default function Contact() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setStatus('sending')
 
     const form = e.currentTarget
     const data = new FormData(form)
+    const name = data.get('name')?.toString().trim() || ''
+    const email = data.get('email')?.toString().trim() || ''
+    const subject = data.get('subject')?.toString().trim() || ''
+    const message = data.get('message')?.toString().trim() || ''
+
+    const newErrors = { name: '', email: '', subject: '', message: '' }
+    let hasError = false
+
+    if (!name) {
+      newErrors.name = 'Name is required'
+      hasError = true
+    }
+
+    if (!email) {
+      newErrors.email = 'Email is required'
+      hasError = true
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = 'Please enter a valid email address'
+      hasError = true
+    }
+
+    if (!subject) {
+      newErrors.subject = 'Subject is required'
+      hasError = true
+    }
+
+    if (!message) {
+      newErrors.message = 'Message is required'
+      hasError = true
+    }
+
+    setErrors(newErrors)
+
+    if (hasError) {
+      return
+    }
+
+    setStatus('sending')
 
     data.append('access_key', import.meta.env.VITE_WEB3FORMS_KEY ?? '')
     data.append('subject', `Portfolio Contact: ${data.get('subject') || 'New Message'}`)
@@ -93,9 +164,9 @@ export default function Contact() {
         {/* Section Header */}
         <motion.div
           className="contact-header mb-16 md:mb-20"
-          initial={{ opacity: 0, y: 24 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.72, ease: [0.16, 1, 0.3, 1] }}
+          initial={{ opacity: 0, y: 20, filter: 'blur(4px)' }}
+          animate={inView ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
+          transition={{ duration: 0.75, ease: [0.25, 1, 0.5, 1] }}
         >
           <h2
             id="contact-heading"
@@ -104,10 +175,9 @@ export default function Contact() {
           >
             <span className="block" style={{ color: 'var(--pine)' }}>Let's work</span>
             <span 
-              className="block" 
+              className="block text-stroke-responsive" 
               style={{ 
                 color: 'transparent',
-                WebkitTextStroke: '2px var(--ink)',
                 opacity: 0.15,
                 marginTop: '-0.2rem'
               }}
@@ -122,9 +192,9 @@ export default function Contact() {
           {/* Left — Form Card (Redesigned with premium container and responsive layout grid) */}
           <motion.div
             className="md:col-span-3 min-w-0"
-            initial={{ opacity: 0, y: 24 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.72, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ opacity: 0, y: 28, filter: 'blur(3px)' }}
+            animate={inView ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
+            transition={{ duration: 0.8, delay: 0.1, ease: [0.25, 1, 0.5, 1] }}
           >
             <form
               onSubmit={handleSubmit}
@@ -151,23 +221,20 @@ export default function Contact() {
                     placeholder="Your Name"
                     required
                     aria-required="true"
-                    className="block w-full text-sm border transition-all duration-200 outline-none"
-                    style={{
-                      borderColor: 'var(--hairline-strong)',
-                      background: 'var(--paper-deep)',
-                      color: 'var(--ink)',
-                      padding: '1.15rem 1.5rem',
-                      borderRadius: '12px'
+                    className="block w-full text-sm border outline-none"
+                    style={getInputStyle('name')}
+                    onFocus={() => {
+                      setActiveField('name')
+                      handleInputChange('name')
                     }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = 'var(--pine)'
-                      e.target.style.boxShadow = '0 0 0 3px rgba(60, 74, 63, 0.15)'
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = 'var(--hairline-strong)'
-                      e.target.style.boxShadow = 'none'
-                    }}
+                    onBlur={() => setActiveField(null)}
+                    onChange={() => handleInputChange('name')}
                   />
+                  {errors.name && (
+                    <span className="text-[11px] mt-1.5 block" style={{ color: '#C85A3F', fontFamily: 'var(--font-mono)' }} role="alert">
+                      {errors.name}
+                    </span>
+                  )}
                 </div>
 
                 {/* Email field */}
@@ -186,23 +253,20 @@ export default function Contact() {
                     placeholder="Your@email.com"
                     required
                     aria-required="true"
-                    className="block w-full text-sm border transition-all duration-200 outline-none"
-                    style={{
-                      borderColor: 'var(--hairline-strong)',
-                      background: 'var(--paper-deep)',
-                      color: 'var(--ink)',
-                      padding: '1.15rem 1.5rem',
-                      borderRadius: '12px'
+                    className="block w-full text-sm border outline-none"
+                    style={getInputStyle('email')}
+                    onFocus={() => {
+                      setActiveField('email')
+                      handleInputChange('email')
                     }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = 'var(--pine)'
-                      e.target.style.boxShadow = '0 0 0 3px rgba(60, 74, 63, 0.15)'
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = 'var(--hairline-strong)'
-                      e.target.style.boxShadow = 'none'
-                    }}
+                    onBlur={() => setActiveField(null)}
+                    onChange={() => handleInputChange('email')}
                   />
+                  {errors.email && (
+                    <span className="text-[11px] mt-1.5 block" style={{ color: '#C85A3F', fontFamily: 'var(--font-mono)' }} role="alert">
+                      {errors.email}
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -220,23 +284,22 @@ export default function Contact() {
                   name="subject"
                   type="text"
                   placeholder="What is this about?"
-                  className="block w-full text-sm border transition-all duration-200 outline-none"
-                  style={{
-                    borderColor: 'var(--hairline-strong)',
-                    background: 'var(--paper-deep)',
-                    color: 'var(--ink)',
-                    padding: '1.15rem 1.5rem',
-                    borderRadius: '12px'
+                  required
+                  aria-required="true"
+                  className="block w-full text-sm border outline-none"
+                  style={getInputStyle('subject')}
+                  onFocus={() => {
+                    setActiveField('subject')
+                    handleInputChange('subject')
                   }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = 'var(--pine)'
-                    e.target.style.boxShadow = '0 0 0 3px rgba(60, 74, 63, 0.15)'
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = 'var(--hairline-strong)'
-                    e.target.style.boxShadow = 'none'
-                  }}
+                  onBlur={() => setActiveField(null)}
+                  onChange={() => handleInputChange('subject')}
                 />
+                {errors.subject && (
+                  <span className="text-[11px] mt-1.5 block" style={{ color: '#C85A3F', fontFamily: 'var(--font-mono)' }} role="alert">
+                    {errors.subject}
+                  </span>
+                )}
               </div>
 
               {/* Message field */}
@@ -255,23 +318,20 @@ export default function Contact() {
                   placeholder="Message"
                   required
                   aria-required="true"
-                  className="block w-full text-sm border transition-all duration-200 outline-none resize-y min-h-[9rem]"
-                  style={{
-                    borderColor: 'var(--hairline-strong)',
-                    background: 'var(--paper-deep)',
-                    color: 'var(--ink)',
-                    padding: '1.15rem 1.5rem',
-                    borderRadius: '12px'
+                  className="block w-full text-sm border outline-none resize-y min-h-[9rem]"
+                  style={getInputStyle('message')}
+                  onFocus={() => {
+                    setActiveField('message')
+                    handleInputChange('message')
                   }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = 'var(--pine)'
-                    e.target.style.boxShadow = '0 0 0 3px rgba(60, 74, 63, 0.15)'
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = 'var(--hairline-strong)'
-                    e.target.style.boxShadow = 'none'
-                  }}
+                  onBlur={() => setActiveField(null)}
+                  onChange={() => handleInputChange('message')}
                 />
+                {errors.message && (
+                  <span className="text-[11px] mt-1.5 block" style={{ color: '#C85A3F', fontFamily: 'var(--font-mono)' }} role="alert">
+                    {errors.message}
+                  </span>
+                )}
               </div>
 
               {/* Submit button */}
@@ -279,38 +339,53 @@ export default function Contact() {
                 <MagneticButton strength={6} className="w-full" style={{ display: 'block', width: '100%' }}>
                   <motion.button
                     type="submit"
-                    className="w-full justify-center flex items-center gap-2 text-sm font-bold tracking-wide transition-all duration-200 cursor-pointer"
+                    className="w-full justify-center flex items-center gap-2 text-sm font-bold tracking-wide cursor-pointer"
                     disabled={status === 'sending'}
                     aria-busy={status === 'sending'}
                     aria-describedby={statusId}
                     style={{
-                      background: 'var(--pine)',
+                      background: status === 'sending' ? 'var(--pine-soft)' : 'var(--pine)',
                       color: 'var(--paper)',
                       border: 'none',
                       padding: '1.2rem 2rem',
                       borderRadius: '12px',
                       display: 'flex',
+                      opacity: status === 'sending' ? 0.7 : 1,
+                      transition: 'background 0.25s, opacity 0.25s',
+                      cursor: status === 'sending' ? 'not-allowed' : 'pointer',
                     }}
-                    whileHover={{ 
-                      y: -2,
-                      background: 'var(--pine-soft)',
-                    }}
-                    whileTap={{ scale: 0.99 }}
+                     whileHover={!isCoarse && status !== 'sending' ? { y: -2, background: 'var(--pine-soft)' } : {}}
+                    whileTap={status !== 'sending' ? { scale: 0.99 } : {}}
                   >
+                    {status === 'sending' && (
+                      <motion.span
+                        className="inline-block w-4 h-4 rounded-full border-2 flex-shrink-0"
+                        style={{
+                          borderColor: 'rgba(250,248,244,0.3)',
+                          borderTopColor: 'rgba(250,248,244,0.95)',
+                        }}
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 0.7, repeat: Infinity, ease: 'linear' }}
+                        aria-hidden="true"
+                      />
+                    )}
                     <span>
                       {status === 'sending' ? 'Sending…' :
-                       status === 'sent' ? 'Sent!' :
-                       status === 'error' ? 'Failed' :
-                       'Submit'}
+                       status === 'sent'    ? '✓ Sent!'  :
+                       status === 'error'   ? 'Try Again' :
+                       'Send Message'}
                     </span>
                   </motion.button>
                 </MagneticButton>
 
-                <div className="min-h-[1.25rem] flex items-center justify-center">
-                  <p
+                <div className="min-h-[1.5rem] flex items-center justify-center">
+                  <motion.p
                     id={statusId}
                     role="status"
                     aria-live="polite"
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: status ? 1 : 0, y: status ? 0 : 4 }}
+                    transition={{ duration: 0.3, ease: [0.25, 1, 0.5, 1] }}
                     style={{
                       fontSize: 'var(--text-caption)',
                       fontFamily: 'var(--font-mono)',
@@ -323,10 +398,10 @@ export default function Contact() {
                         : 'transparent',
                     }}
                   >
-                    {status === 'sent' ? 'Your message is on its way — thank you.' :
-                     status === 'error' ? 'Connection failed. Please retry.' :
-                     status === 'sending' ? 'Connecting to message server…' : ''}
-                  </p>
+                    {status === 'sent'    ? '✓ Your message is on its way — thank you.' :
+                     status === 'error'   ? '✕ Connection failed. Please try again.' :
+                     status === 'sending' ? 'Sending your message…' : ''}
+                  </motion.p>
                 </div>
               </div>
             </form>
@@ -335,9 +410,9 @@ export default function Contact() {
           {/* Right — Info Cards Stack */}
           <motion.div
             className="md:col-span-2 min-w-0 flex flex-col gap-6"
-            initial={{ opacity: 0, x: 36 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.72, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ opacity: 0, x: 28, filter: 'blur(3px)' }}
+            animate={inView ? { opacity: 1, x: 0, filter: 'blur(0px)' } : {}}
+            transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 1, 0.5, 1] }}
           >
             {/* Email Card */}
             <motion.div
@@ -349,8 +424,8 @@ export default function Contact() {
                 borderRadius: 'var(--radius-card)',
                 padding: '1.75rem',
               }}
-              whileHover={{ y: -5, borderColor: 'rgba(60, 74, 63, 0.25)' }}
-              transition={{ duration: 0.25 }}
+              whileHover={isCoarse ? undefined : { y: -6, borderColor: 'rgba(60, 74, 63, 0.28)', boxShadow: '0 20px 40px -16px rgba(25,23,20,0.1)' }}
+              transition={{ type: 'spring', stiffness: 300, damping: 24 }}
             >
               {/* Mouse Follow Spotlight Glow */}
               <div
@@ -394,7 +469,7 @@ export default function Contact() {
                         background: copied ? 'rgba(60, 74, 63, 0.08)' : 'var(--paper)',
                         transition: 'border-color 0.15s, background-color 0.15s, color 0.15s',
                       }}
-                      whileHover={{ 
+                      whileHover={isCoarse ? undefined : { 
                         scale: 1.05,
                         borderColor: 'var(--pine)',
                         color: copied ? 'var(--pine)' : 'var(--ink)'
@@ -423,8 +498,8 @@ export default function Contact() {
                 borderRadius: 'var(--radius-card)',
                 padding: '1.5rem',
               }}
-              whileHover={{ y: -5, borderColor: 'rgba(60, 74, 63, 0.25)' }}
-              transition={{ duration: 0.25 }}
+              whileHover={isCoarse ? undefined : { y: -6, borderColor: 'rgba(60, 74, 63, 0.28)', boxShadow: '0 20px 40px -16px rgba(25,23,20,0.1)' }}
+              transition={{ type: 'spring', stiffness: 300, damping: 24 }}
             >
               {/* Mouse Follow Spotlight Glow */}
               <div
@@ -456,8 +531,8 @@ export default function Contact() {
                 borderRadius: 'var(--radius-card)',
                 padding: '1.75rem',
               }}
-              whileHover={{ y: -5, borderColor: 'rgba(60, 74, 63, 0.25)' }}
-              transition={{ duration: 0.25 }}
+              whileHover={isCoarse ? undefined : { y: -6, borderColor: 'rgba(60, 74, 63, 0.28)', boxShadow: '0 20px 40px -16px rgba(25,23,20,0.1)' }}
+              transition={{ type: 'spring', stiffness: 300, damping: 24 }}
             >
               {/* Mouse Follow Spotlight Glow */}
               <div
@@ -507,7 +582,7 @@ export default function Contact() {
                       background: 'var(--paper)',
                       transition: 'border-color 0.15s, background-color 0.15s, color 0.15s',
                     }}
-                    whileHover={{
+                    whileHover={isCoarse ? undefined : {
                       scale: 1.05,
                       borderColor: 'var(--pine)',
                       color: 'var(--ink)',
