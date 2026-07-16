@@ -1,5 +1,6 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
+import useCoarsePointer from '../hooks/useCoarsePointer'
 import {
   SiC, SiSpringboot, SiPython, SiFlask, SiPostgresql, SiMysql,
   SiDocker, SiKubernetes, SiGit, SiGithub, SiPostman, SiHibernate,
@@ -40,11 +41,12 @@ const rows = [
 ]
 
 const reveal = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 20, filter: 'blur(4px)' },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.72, ease: [0.16, 1, 0.3, 1] },
+    filter: 'blur(0px)',
+    transition: { duration: 0.75, ease: [0.25, 1, 0.5, 1] },
   },
 }
 
@@ -52,43 +54,53 @@ const listReveal = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: {
-      staggerChildren: 0.05,
-    }
-  }
+    transition: { staggerChildren: 0.04, delayChildren: 0.05 },
+  },
 }
 
 const itemReveal = {
-  hidden: { opacity: 0, scale: 0.9, y: 12 },
+  hidden: { opacity: 0, scale: 0.88, y: 14, filter: 'blur(3px)' },
   visible: {
     opacity: 1,
     scale: 1,
     y: 0,
-    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] }
-  }
+    filter: 'blur(0px)',
+    transition: { duration: 0.55, ease: [0.25, 1, 0.5, 1] },
+  },
 }
 
 function SkillCard({ name, Icon, color }) {
+  const isCoarse = useCoarsePointer()
+  const isVar = color.startsWith('var')
+  const [isHovered, setIsHovered] = useState(false)
+
   return (
     <motion.div
       className="flex flex-col items-center justify-center p-3 sm:p-4 rounded-xl border aspect-square w-[84px] sm:w-[110px] md:w-[120px] flex-shrink-0 group cursor-default"
-      style={{
-        background: 'var(--paper-dim)',
-        borderColor: 'var(--hairline)',
-      }}
+      style={{ background: 'var(--paper-dim)', borderColor: 'var(--hairline)' }}
       variants={itemReveal}
-      whileHover={{
-        y: -4,
-        scale: 1.04,
-        borderColor: color,
-        background: color.startsWith('var') ? 'rgba(60, 74, 63, 0.08)' : `${color}0d`,
-        boxShadow: color.startsWith('var') ? 'none' : `0 8px 20px -8px ${color}35`,
+      onMouseEnter={isCoarse ? undefined : () => setIsHovered(true)}
+      onMouseLeave={isCoarse ? undefined : () => setIsHovered(false)}
+      whileHover={isCoarse ? undefined : {
+        y: -5,
+        scale: 1.06,
+        borderColor: isVar ? 'rgba(60,74,63,0.3)' : color,
+        background: isVar ? 'rgba(60,74,63,0.07)' : `${color}12`,
+        boxShadow: isVar ? '0 8px 24px -8px rgba(60,74,63,0.18)' : `0 10px 28px -8px ${color}45`,
       }}
-      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+      transition={{ type: 'spring', stiffness: 320, damping: 22 }}
     >
-      <div className="flex items-center justify-center mb-2 transition-transform duration-300 group-hover:scale-110">
-        <Icon className="text-2xl sm:text-3xl md:text-4xl" style={{ color }} aria-hidden="true" />
-      </div>
+      <motion.div
+        className="flex items-center justify-center mb-2"
+         whileHover={isCoarse ? undefined : { scale: 1.18 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 18 }}
+      >
+        <Icon 
+          className="text-2xl sm:text-3xl md:text-4xl transition-colors duration-300" 
+          style={{ color: (isHovered && !isCoarse) ? color : 'var(--ink-soft)' }} 
+          aria-hidden="true" 
+        />
+      </motion.div>
       <span
         className="font-mono text-[9px] sm:text-xs font-semibold text-center truncate w-full"
         style={{ color: 'var(--ink-soft)' }}
@@ -124,10 +136,9 @@ export default function TechStack() {
             >
               <span className="block" style={{ color: 'var(--pine)' }}>Tech</span>
               <span 
-                className="block" 
+                className="block text-stroke-responsive" 
                 style={{ 
                   color: 'transparent',
-                  WebkitTextStroke: '2px var(--ink)',
                   opacity: 0.15,
                   marginTop: '-0.2rem'
                 }}
