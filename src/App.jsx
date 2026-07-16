@@ -1,31 +1,33 @@
 import { useState, useEffect, lazy, Suspense } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Lenis from 'lenis'
-import LedgerLine from './components/LedgerLine'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import About from './components/About'
 import Contact from './components/Contact'
 import Loader from './components/Loader'
 import NotFound from './components/NotFound'
+import PremiumBackground from './components/PremiumBackground'
+import Cursor from './components/Cursor'
+import CommandPalette from './components/CommandPalette'
 
 const Projects = lazy(() => import('./components/Projects'))
+const TechStack = lazy(() => import('./components/TechStack'))
 const Experience = lazy(() => import('./components/Experience'))
 const Certifications = lazy(() => import('./components/Certifications'))
 
 const footerNav = [
-  { label: 'About',          href: '#about' },
-  { label: 'Projects',       href: '#projects' },
-  { label: 'Experience',     href: '#experience' },
-  { label: 'Certifications', href: '#certifications' },
-  { label: 'Contact',        href: '#contact' },
+  { label: 'About',    href: '#about' },
+  { label: 'Skills',   href: '#tech-stack' },
+  { label: 'Projects', href: '#projects' },
+  { label: 'Contact',  href: '#contact' },
 ]
 
 function Footer({ currentPath }) {
   const isHome = !currentPath || currentPath === '/' || currentPath.toLowerCase() === '/index.html'
   return (
     <footer
-      className="relative z-10 py-14"
+      className="relative z-10 pt-14 pb-32"
       style={{
         borderTop: '1px solid var(--hairline)',
         background: 'var(--paper)',
@@ -41,15 +43,15 @@ function Footer({ currentPath }) {
               href={isHome ? "#hero" : "/"}
               className="font-display font-bold text-2xl"
               style={{ color: 'var(--ink)' }}
-              aria-label="Manav Baghel — Back to top"
+              aria-label="MB — Manav Baghel Back to top"
             >
               MB
             </a>
             <p className="mt-2 text-sm max-w-xs" style={{ fontFamily: 'var(--font-mono)', color: 'var(--ink-faint)', lineHeight: 1.6 }}>
-              Backend Developer · Open to internships &amp; full-time opportunities.
+              Web Developer · Open to internships &amp; full-time opportunities.
             </p>
             <p className="mt-1 text-xs" style={{ fontFamily: 'var(--font-mono)', color: 'var(--ink-faint)' }}>
-              Fatehgarh Sahib, Punjab, India
+              Punjab,IN
             </p>
           </div>
 
@@ -90,12 +92,12 @@ function Footer({ currentPath }) {
           </p>
 
           {/* Social + Resume */}
-          <div className="flex gap-5 flex-wrap justify-center sm:justify-end">
+          <div className="flex gap-2 flex-wrap justify-center sm:justify-end items-center">
             <a
               href="https://github.com/manav-2812"
               target="_blank"
               rel="noopener noreferrer"
-              className="underline-draw font-mono text-xs transition-colors duration-200"
+              className="underline-draw font-mono text-xs transition-colors duration-200 footer-social-link"
               style={{ color: 'var(--ink-faint)' }}
               aria-label="GitHub profile"
               onMouseEnter={e => e.currentTarget.style.color = 'var(--pine)'}
@@ -107,7 +109,7 @@ function Footer({ currentPath }) {
               href="https://linkedin.com/in/manav-baghel"
               target="_blank"
               rel="noopener noreferrer"
-              className="underline-draw font-mono text-xs transition-colors duration-200"
+              className="underline-draw font-mono text-xs transition-colors duration-200 footer-social-link"
               style={{ color: 'var(--ink-faint)' }}
               aria-label="LinkedIn profile"
               onMouseEnter={e => e.currentTarget.style.color = 'var(--pine)'}
@@ -119,7 +121,7 @@ function Footer({ currentPath }) {
               href="https://instagram.com/3manav_"
               target="_blank"
               rel="noopener noreferrer"
-              className="underline-draw font-mono text-xs transition-colors duration-200"
+              className="underline-draw font-mono text-xs transition-colors duration-200 footer-social-link"
               style={{ color: 'var(--ink-faint)' }}
               aria-label="Instagram profile"
               onMouseEnter={e => e.currentTarget.style.color = 'var(--pine)'}
@@ -131,7 +133,7 @@ function Footer({ currentPath }) {
               href="https://x.com/baghell_"
               target="_blank"
               rel="noopener noreferrer"
-              className="underline-draw font-mono text-xs transition-colors duration-200"
+              className="underline-draw font-mono text-xs transition-colors duration-200 footer-social-link"
               style={{ color: 'var(--ink-faint)' }}
               aria-label="X (Twitter) profile"
               onMouseEnter={e => e.currentTarget.style.color = 'var(--pine)'}
@@ -143,8 +145,9 @@ function Footer({ currentPath }) {
               href="https://mail.google.com/mail/?view=cm&fs=1&to=manavbaghhel@gmail.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="underline-draw font-mono text-xs transition-colors duration-200"
+              className="underline-draw font-mono text-xs transition-colors duration-200 footer-social-link"
               style={{ color: 'var(--ink-faint)' }}
+              aria-label="Send email to Manav Baghel"
               onMouseEnter={e => e.currentTarget.style.color = 'var(--pine)'}
               onMouseLeave={e => e.currentTarget.style.color = 'var(--ink-faint)'}
             >
@@ -156,7 +159,7 @@ function Footer({ currentPath }) {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="View Resume"
-              className="underline-draw font-mono text-xs transition-colors duration-200"
+              className="underline-draw font-mono text-xs transition-colors duration-200 footer-social-link"
               style={{ color: 'var(--ink-faint)' }}
               onMouseEnter={e => e.currentTarget.style.color = 'var(--pine)'}
               onMouseLeave={e => e.currentTarget.style.color = 'var(--ink-faint)'}
@@ -200,6 +203,14 @@ function ScrollTopButton() {
   )
 }
 
+function SectionFallback() {
+  return (
+    <div className="section min-h-[30vh] flex items-center justify-center" aria-hidden="true">
+      <div className="w-12 h-[1px] animate-pulse" style={{ background: 'var(--hairline-strong)' }} />
+    </div>
+  )
+}
+
 function App() {
   const [loading, setLoading] = useState(true)
   const [currentPath, setCurrentPath] = useState(window.location.pathname)
@@ -231,6 +242,9 @@ function App() {
   }, [])
 
   useEffect(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (prefersReducedMotion) return undefined
+
     // Lenis smooth scroll — v1+ API (removed deprecated direction/smooth options)
     const lenis = new Lenis({
       lerp: 0.08,
@@ -257,24 +271,30 @@ function App() {
 
   return (
     <>
+      <a href="#main-content" className="skip-link">
+        Skip to main content
+      </a>
       <AnimatePresence mode="wait">
         {loading && <Loader key="loader" onComplete={handleLoadComplete} />}
       </AnimatePresence>
 
-      <LedgerLine />
+      <PremiumBackground />
       <Navbar currentPath={currentPath} />
       <main id="main-content" aria-hidden={loading || undefined}>
         {isHome ? (
           <>
             <Hero />
             <About />
-            <Suspense fallback={<Loader />}>
+            <Suspense fallback={<SectionFallback />}>
+              <TechStack />
+            </Suspense>
+            <Suspense fallback={<SectionFallback />}>
               <Projects />
             </Suspense>
-            <Suspense fallback={<Loader />}>
+            <Suspense fallback={<SectionFallback />}>
               <Experience />
             </Suspense>
-            <Suspense fallback={<Loader />}>
+            <Suspense fallback={<SectionFallback />}>
               <Certifications />
             </Suspense>
             <Contact />
@@ -287,6 +307,9 @@ function App() {
 
       {/* Scroll-to-top button */}
       {!loading && isHome && <ScrollTopButton />}
+
+      <Cursor />
+      <CommandPalette />
     </>
   )
 }
