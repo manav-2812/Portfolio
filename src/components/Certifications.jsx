@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { HiOutlineArrowUpRight } from 'react-icons/hi2'
+import useCoarsePointer from '../hooks/useCoarsePointer'
 
 /* ── Cert data ─────────────────────────────────────────────────────────── */
 const certifications = [
@@ -55,11 +56,10 @@ const certifications = [
 
 /* ── Entrance animations ────────────────────────────────────────────────── */
 const revealVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] } 
+  hidden: { opacity: 0, y: 20, filter: 'blur(4px)' },
+  visible: {
+    opacity: 1, y: 0, filter: 'blur(0px)',
+    transition: { duration: 0.75, ease: [0.25, 1, 0.5, 1] }
   },
 }
 
@@ -67,25 +67,22 @@ const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.12,
-    },
+    transition: { staggerChildren: 0.07, delayChildren: 0.1 },
   },
 }
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 24, filter: 'blur(3px)' },
   visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] },
+    opacity: 1, y: 0, filter: 'blur(0px)',
+    transition: { duration: 0.7, ease: [0.25, 1, 0.5, 1] },
   },
 }
 
 /* ── Single cert card ──────────────────────────────────────────────────── */
 function CertCard({ cert, issuerData }) {
   const { issuer, year } = issuerData
+  const isCoarse = useCoarsePointer()
 
   // Track mouse coordinates for premium spotlight glow
   const handleMouseMove = (e) => {
@@ -111,10 +108,10 @@ function CertCard({ cert, issuerData }) {
         background: 'var(--paper-dim)',
         textDecoration: 'none',
       }}
-      whileHover={{
-        y: -6,
-        borderColor: 'var(--pine-soft)',
-        boxShadow: '0 12px 30px -10px rgba(25, 23, 20, 0.05)',
+      whileHover={isCoarse ? undefined : {
+        y: -7,
+        borderColor: 'rgba(60, 74, 63, 0.28)',
+        boxShadow: '0 20px 40px -16px rgba(25, 23, 20, 0.1)',
       }}
       transition={{ type: 'spring', stiffness: 300, damping: 22 }}
     >
@@ -273,10 +270,9 @@ export default function Certifications() {
           >
             <span className="block" style={{ color: 'var(--pine)' }}>Verified</span>
             <span 
-              className="block" 
+              className="block text-stroke-responsive" 
               style={{ 
                 color: 'transparent',
-                WebkitTextStroke: '2px var(--ink)',
                 opacity: 0.15,
                 marginTop: '-0.2rem'
               }}
