@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import MagneticButton from './MagneticButton'
+import useCoarsePointer from '../hooks/useCoarsePointer'
 
 const navLinks = [
   { label: 'About',    href: '#about',      id: 'about' },
@@ -10,6 +11,7 @@ const navLinks = [
 ]
 
 export default function Navbar({ currentPath }) {
+  const isCoarse = useCoarsePointer()
   const isHome = !currentPath || currentPath === '/' || currentPath.toLowerCase() === '/index.html'
   const [scrolled, setScrolled]           = useState(false)
   const [hidden, setHidden]               = useState(false)
@@ -25,7 +27,12 @@ export default function Navbar({ currentPath }) {
       const max = document.documentElement.scrollHeight - window.innerHeight
       setScrollPct(max > 0 ? (y / max) * 100 : 0)
       setScrolled(y > 50)
-      setHidden(y > lastY.current + 4 && y > 220)
+      // Hide on scroll-down, show on any scroll-up
+      if (y < lastY.current) {
+        setHidden(false)
+      } else if (y > lastY.current + 8 && y > 220) {
+        setHidden(true)
+      }
       lastY.current = y
     }
     window.addEventListener('scroll', onScroll, { passive: true })
@@ -57,9 +64,9 @@ export default function Navbar({ currentPath }) {
 
       <motion.nav
         className="fixed top-0 left-0 right-0 z-[999]"
-        initial={{ y: -80 }}
-        animate={{ y: hidden ? -80 : 0 }}
-        transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
+        initial={{ y: -80, opacity: 0 }}
+        animate={{ y: hidden ? -80 : 0, opacity: hidden ? 0 : 1 }}
+        transition={{ duration: 0.42, ease: [0.25, 1, 0.5, 1] }}
         aria-label="Main navigation"
       >
         <div className={`navbar-surface${scrolled ? ' is-scrolled' : ''}`}>
@@ -69,7 +76,7 @@ export default function Navbar({ currentPath }) {
               href={isHome ? "#hero" : "/"}
               className="font-display font-bold text-xl tracking-tight block"
               style={{ color: 'var(--ink)' }}
-              whileHover={{ scale: 1.06 }}
+              whileHover={isCoarse ? undefined : { scale: 1.06 }}
               whileTap={{ scale: 0.94 }}
               aria-label="MB — Manav Baghel Back to top"
             >
@@ -105,7 +112,7 @@ export default function Navbar({ currentPath }) {
                   rel="noopener noreferrer"
                   aria-label="View Resume"
                   className="btn-primary text-xs px-5 py-2 rounded-full flex items-center gap-1.5"
-                  whileHover={{ y: -1.5 }}
+                  whileHover={isCoarse ? undefined : { y: -1.5 }}
                   whileTap={{ scale: 0.95 }}
                 >
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
@@ -121,7 +128,7 @@ export default function Navbar({ currentPath }) {
                 <motion.a
                   href={isHome ? "#contact" : "/#contact"}
                   className="btn-primary text-xs px-5 py-2 rounded-full"
-                  whileHover={{ y: -1.5 }}
+                  whileHover={isCoarse ? undefined : { y: -1.5 }}
                   whileTap={{ scale: 0.95 }}
                 >
                   Hire Me
@@ -158,8 +165,11 @@ function NavLink({ href, label, active, hovered, onHover }) {
         <motion.span
           layoutId="nav-hover-pill"
           className="absolute inset-0 z-0 rounded-full"
-          style={{ background: 'rgba(60, 74, 63, 0.06)' }}
-          transition={{ type: 'spring', stiffness: 350, damping: 28 }}
+          style={{ background: 'rgba(60, 74, 63, 0.07)' }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 32 }}
         />
       )}
 
@@ -204,7 +214,7 @@ function MobileMenu({ activeSection, isHome }) {
               y:       open ? (i === 0 ? 6  : i === 2 ? -6  : 0) : 0,
               opacity: open && i === 1 ? 0 : 1,
             }}
-            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.26, ease: [0.25, 1, 0.5, 1] }}
           />
         ))}
       </button>
@@ -219,10 +229,10 @@ function MobileMenu({ activeSection, isHome }) {
               border: '1px solid var(--hairline)',
               borderTop: 'none',
             }}
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0, y: -6, filter: 'blur(4px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, y: -6, filter: 'blur(4px)' }}
+            transition={{ duration: 0.3, ease: [0.25, 1, 0.5, 1] }}
           >
             <ul className="flex flex-col gap-1 p-4 list-none" role="list">
           {navLinks.map(link => (
