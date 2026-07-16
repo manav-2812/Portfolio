@@ -49,9 +49,10 @@ export default function NotFound({ onNavigate }) {
 
   // Animation variants
   const fadeIn = (delay = 0) => ({
-    initial: { opacity: 0, y: 15 },
-    animate: { opacity: 1, y: 0 },
-    transition: { delay, duration: 0.6, ease: [0.16, 1, 0.3, 1] },
+    initial: { opacity: 0, y: 16, filter: 'blur(4px)' },
+    animate: { opacity: 1, y: 0, filter: 'blur(0px)' },
+    exit:    { opacity: 0, y: -8 },
+    transition: { delay, duration: 0.7, ease: [0.25, 1, 0.5, 1] },
   })
 
   return (
