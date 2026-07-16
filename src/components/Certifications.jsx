@@ -116,7 +116,7 @@ function CertCard({ cert, issuerData }) {
         borderColor: 'var(--pine-soft)',
         boxShadow: '0 12px 30px -10px rgba(25, 23, 20, 0.05)',
       }}
-      transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ type: 'spring', stiffness: 300, damping: 22 }}
     >
       {/* Neutral Pine Accent Mouse Follow Spotlight Glow */}
       <div

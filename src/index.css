@@ -120,7 +120,7 @@ a, button, [role="button"] { cursor: pointer; }
 .card-hover {
   position: relative;
   isolation: isolate;
-  transition: border-color 0.25s var(--ease-editorial), transform 0.25s var(--ease-editorial);
+  transition: border-color 0.35s var(--ease-editorial), transform 0.35s var(--ease-editorial);
 }
 .card-hover::after {
   content: '';
@@ -131,7 +131,7 @@ a, button, [role="button"] { cursor: pointer; }
   box-shadow: 0 12px 24px -12px rgba(25, 23, 20, 0.12);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.25s var(--ease-editorial);
+  transition: opacity 0.35s var(--ease-editorial);
 }
 .card-hover:hover,
 .card-hover:focus-visible {
@@ -373,7 +373,7 @@ a, button, [role="button"] { cursor: pointer; }
   background: var(--pine); color: var(--paper);
   border: 1px solid var(--pine);
   box-shadow: 0 1px 2px rgba(25, 23, 20, 0.06);
-  transition: background 0.25s var(--ease-editorial), border-color 0.25s var(--ease-editorial), transform 0.25s var(--ease-editorial);
+  transition: background 0.35s var(--ease-editorial), border-color 0.35s var(--ease-editorial), transform 0.35s var(--ease-editorial);
 }
 .btn-primary::after {
   content: '';
@@ -383,7 +383,7 @@ a, button, [role="button"] { cursor: pointer; }
   border-radius: inherit;
   box-shadow: 0 10px 20px -8px rgba(60, 74, 63, 0.35);
   opacity: 0;
-  transition: opacity 0.25s var(--ease-editorial);
+  transition: opacity 0.35s var(--ease-editorial);
 }
 .btn-primary:hover { background: var(--pine-soft); border-color: var(--pine-soft); transform: translateY(-1px); }
 .btn-primary:hover::after { opacity: 1; }
@@ -397,7 +397,7 @@ a, button, [role="button"] { cursor: pointer; }
   font-family: var(--font-body); font-weight: 600; font-size: 0.875rem;
   background: transparent; color: var(--ink);
   border: 1px solid var(--hairline-strong);
-  transition: border-color 0.25s var(--ease-editorial), background 0.25s var(--ease-editorial), transform 0.25s var(--ease-editorial);
+  transition: border-color 0.35s var(--ease-editorial), background 0.35s var(--ease-editorial), transform 0.35s var(--ease-editorial);
 }
 .btn-ghost:hover { border-color: var(--pine); background: rgba(60, 74, 63, 0.04); transform: translateY(-1px); }
 .btn-ghost:active { transform: translateY(0); }

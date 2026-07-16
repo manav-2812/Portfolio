@@ -239,7 +239,7 @@ export default function About() {
                   y: -5,
                   boxShadow: '0 16px 32px -16px rgba(25, 23, 20, 0.12)',
                 }}
-                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ type: 'spring', stiffness: 300, damping: 22 }}
               >
                 {/* Shimmering Multi-color Spotlight Radial Glow */}
                 <div
@@ -312,7 +312,7 @@ export default function About() {
                   y: -5,
                   boxShadow: '0 16px 32px -16px rgba(25, 23, 20, 0.12)',
                 }}
-                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ type: 'spring', stiffness: 300, damping: 22 }}
               >
                 {/* Shimmering Multi-color Spotlight Radial Glow */}
                 <div

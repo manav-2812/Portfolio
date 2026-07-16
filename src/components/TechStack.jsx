@@ -71,7 +71,7 @@ const itemReveal = {
 function SkillCard({ name, Icon, color }) {
   return (
     <motion.div
-      className="flex flex-col items-center justify-center p-3 sm:p-4 rounded-xl border aspect-square w-[84px] sm:w-[110px] md:w-[120px] flex-shrink-0 transition-all duration-300 group cursor-default"
+      className="flex flex-col items-center justify-center p-3 sm:p-4 rounded-xl border aspect-square w-[84px] sm:w-[110px] md:w-[120px] flex-shrink-0 group cursor-default"
       style={{
         background: 'var(--paper-dim)',
         borderColor: 'var(--hairline)',
@@ -79,12 +79,12 @@ function SkillCard({ name, Icon, color }) {
       variants={itemReveal}
       whileHover={{
         y: -4,
-        scale: 1.05,
+        scale: 1.04,
         borderColor: color,
         background: color.startsWith('var') ? 'rgba(60, 74, 63, 0.08)' : `${color}0d`,
         boxShadow: color.startsWith('var') ? 'none' : `0 8px 20px -8px ${color}35`,
       }}
-      transition={{ duration: 0.2 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
     >
       <div className="flex items-center justify-center mb-2 transition-transform duration-300 group-hover:scale-110">
         <Icon className="text-2xl sm:text-3xl md:text-4xl" style={{ color }} aria-hidden="true" />
