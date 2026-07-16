@@ -1,24 +1,40 @@
-# Manav Baghel — Backend Developer
+# Manav Baghel
 
 > Developer portfolio of Manav Baghel, a B.Tech Computer Science student specializing in backend software engineering with Java, Spring Boot, Python, Flask, and cloud technologies.
 
 ## About
 Manav Baghel is a Backend Developer based in Punjab, India. He builds scalable REST APIs, database-backed architectures, and containerized distributed systems.
 
-- **Email**: [manavbaghhel@gmail.com](mailto:manavbaghhel@gmail.com)
-- **GitHub**: [github.com/manav-2812](https://github.com/manav-2812)
-- **LinkedIn**: [linkedin.com/in/manav-baghel](https://linkedin.com/in/manav-baghel)
+## Contact Info
+- [Email](mailto:manavbaghhel@gmail.com)
+- [GitHub](https://github.com/manav-2812)
+- [LinkedIn](https://linkedin.com/in/manav-baghel)
 
 ## Technical Skills
-- **Languages**: Java, Python, JavaScript, SQL, HTML/CSS
-- **Backend & Frameworks**: Spring Boot, Spring Security, JPA/Hibernate, Flask, Express.js
-- **Databases**: PostgreSQL, MySQL, Redis, MongoDB
-- **DevOps & Cloud**: Docker, Kubernetes, AWS, Git, GitHub Actions, Vercel
+- Java
+- Python
+- C++
+- C
+- Spring Boot
+- Spring Security
+- JPA/Hibernate
+- Flask
+- Express.js
+- PostgreSQL
+- MySQL
+- Redis
+- MongoDB
+- Docker
+- Kubernetes
+- AWS
+- Git
+- GitHub Actions
+- Vercel
 
 ## Key Projects
-- **GrabBite**: A microservices-based food ordering platform using Spring Boot, Spring Cloud, PostgreSQL, and RabbitMQ.
-- **AutoGrade**: An automated code assessment system containerized with Docker, managing safe code sandbox execution.
-- **SmartInventory**: A spring-boot based inventory management system with real-time stock notifications and analytics.
+- GrabBite
+- AutoGrade
+- SmartInventory
 
 ## Links & Navigation
 - [Home Page](https://manavbaghel.dev/)
