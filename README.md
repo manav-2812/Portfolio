@@ -85,6 +85,7 @@ The project is intentionally scoped as a single-page application. There is no CM
 - **Scrollspy Gutter Gages**: Custom desktop left-gutter layout indicator (`LedgerLine`) tracking scroll progress and active viewports.
 - **Intersection-Spy Navbar**: Tracks and highlights the current section in view using a decoupled IntersectionObserver instance.
 - **Custom Tracking Cursor**: Physics-based cursor ring utilizing linear interpolation (lerp: `0.15`) that morphs size on hover states, optimized with document-level event delegation (disabled on touch devices).
+- **Touch-safe Hover Safeguards**: Uses a device pointer capability check to disable hover effects (`whileHover` scaling, colors) on touch devices, completely avoiding "stuck hover" states.
 - **Collapsible, Categorized Skills**: Technical skills panel grouped by domain (languages, databases, backend, DevOps, tools) with smooth reveal states.
 
 ### Performance
@@ -92,6 +93,7 @@ The project is intentionally scoped as a single-page application. There is no CM
 - **Route-level Code Splitting**: Heavy viewports (Projects, Experience, and Certifications) are lazy-loaded via `React.lazy` and `Suspense` to preserve initial load speeds.
 - **Manual Chunk Splitting**: isolates Framer Motion and core vendor dependencies into dedicated vendor chunks in the Vite build config, optimizing long-term client-side caching.
 - **Render-Decoupled Coordinate Loops**: Pointer coordinates for custom cursor tracking are stored in references (`useRef`) and updated directly on the DOM inside a `requestAnimationFrame` loop, resulting in 0 React state re-renders during tracking.
+- **Viewport-Gated Orbit Animations**: Conditionally unmounts the 26-dot orbiting constellation on viewports below 1024px, completely eliminating CPU/battery cycles from running hidden background animations on mobile.
 - **Passive Event Observers**: Global window scroll and resize event observers are bound with passive flags to prevent main-thread layout blocking.
 
 ### Accessibility
@@ -183,10 +185,18 @@ portfolio/
 │   ├── apple-touch-icon.png  # Apple launcher icon
 │   ├── favicon.svg           # Website branding favicon
 │   ├── llms.txt              # LLM assistant scraping instructions
-│   ├── og-preview.png        # Open Graph preview card image
+│   ├── og-preview.png        # Open Graph preview card image (1200x620px)
 │   ├── resume.pdf            # PDF copy of developer resume
 │   ├── robots.txt            # Search engine crawl rules
 │   └── sitemap.xml           # XML sitemap mapping URLs
+├── docs/
+│   └── screenshots/          # Portfolio showcase screenshots
+│       ├── contact.webp
+│       ├── experience.webp
+│       ├── hero.webp
+│       ├── mobile.webp
+│       ├── projects.webp
+│       └── skills.webp
 ├── src/
 │   ├── assets/               # Local static assets (empty)
 │   ├── components/
@@ -204,6 +214,8 @@ portfolio/
 │   │   ├── PremiumBackground.jsx # Dynamic constellation particle background
 │   │   ├── Projects.jsx       # Work projects grid layout
 │   │   └── TechStack.jsx      # Skills and technologies board
+│   ├── hooks/
+│   │   └── useCoarsePointer.js # Device capability detection hook
 │   ├── test/                 # Test suite setup and files
 │   │   ├── App.property.test.jsx
 │   │   ├── Loader.property.test.jsx
@@ -211,7 +223,11 @@ portfolio/
 │   ├── App.jsx                # Layout composition, navigation and Lenis scroll
 │   ├── main.jsx               # React core bootstrapper entry
 │   └── index.css              # Main tailwind and custom design system rules
+├── .gitignore                 # Specifies intentionally untracked files to ignore
+├── .oxlintrc.json             # Static code analysis configuration for Oxlint
 ├── index.html                 # Main document HTML entry shell
+├── LICENSE                    # MIT License specification file
+├── tailwind.config.js         # Tailwind theme configuration
 ├── vite.config.js             # Vite configurations and rollup chunk splits
 └── package.json               # Package commands and dependencies list
 ```
@@ -254,12 +270,14 @@ npm run dev
 
 ## Available Scripts
 
-| Command           | Description                                                |
-| ----------------- | ---------------------------------------------------------- |
-| `npm run dev`     | Starts the Vite development server with hot module reload  |
-| `npm run build`   | Produces an optimized production build in `dist/`          |
-| `npm run preview` | Serves the production build locally for final verification |
-| `npm run lint`    | Runs `oxlint` against the codebase                         |
+| Command              | Description                                                |
+| -------------------- | ---------------------------------------------------------- |
+| `npm run dev`        | Starts the Vite development server with hot module reload  |
+| `npm run build`      | Produces an optimized production build in `dist/`          |
+| `npm run preview`    | Serves the production build locally for final verification |
+| `npm run lint`       | Runs `oxlint` against the codebase                         |
+| `npm run test`       | Runs the test suite via Vitest (single run)                |
+| `npm run test:watch` | Runs Vitest in watch mode for active testing development   |
 
 <br />
 
@@ -286,7 +304,7 @@ To deliver optimal loading times and keep frames fluid, several front-end perfor
 
 The viewport is tested across standard breakpoints (mobile, tablet, desktop) using mobile-first styles:
 
-- **Mobile (< 768px)**: Adapts vertical whitespace with compact padding values (`6.5rem`), transforms grids to single-column blocks, and disables the desktop-specific `Cursor` and `LedgerLine`.
+- **Mobile (< 768px)**: Adapts vertical whitespace with compact padding values (`6.5rem`), transforms grids to single-column blocks, disables the desktop-specific `Cursor` and `LedgerLine`, suppresses hover animations to avoid "stuck tap" styles, and unmounts the orbiting constellation to save mobile CPU/battery.
 - **Tablet (768px - 1024px)**: Scales layout elements into grid structures.
 - **Desktop (> 1024px)**: Enables custom circular mouse cursors, vertical progress gauges, and multi-column visual boards.
 
