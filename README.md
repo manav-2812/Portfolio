@@ -6,7 +6,7 @@
 
 A developer portfolio featuring an editorial design system, scroll-driven motion, custom cursor physics, and clean layout composition — built with React, Vite, and Tailwind CSS, engineered for speed and clarity.
 
-[**Live Demo**](https://your-portfolio.vercel.app) · [GitHub Repository](https://github.com/manav-2812/portfolio) · [Report an Issue](https://github.com/manav-2812/portfolio/issues) · [Connect on LinkedIn](https://linkedin.com/in/manav-baghel)
+[**Live Demo**](https://manavbaghel.vercel.app) · [GitHub Repository](https://github.com/manav-2812/portfolio) · [Report an Issue](https://github.com/manav-2812/portfolio/issues) · [Connect on LinkedIn](https://linkedin.com/in/manav-baghel)
 
 <br />
 
@@ -343,7 +343,7 @@ Backend Developer · B.Tech CSE
 
 - GitHub: [@manav-2812](https://github.com/manav-2812)
 - LinkedIn: [linkedin.com/in/manav-baghel](https://linkedin.com/in/manav-baghel)
-- Portfolio: [your-portfolio.vercel.app](https://your-portfolio.vercel.app)
+- Portfolio: [manavbaghel.vercel.app](https://manavbaghel.vercel.app)
 - Email: [manavbaghhel@gmail.com](mailto:manavbaghhel@gmail.com)
 
 <br />

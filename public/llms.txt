@@ -16,30 +16,22 @@ Manav Baghel is a Backend Developer based in Punjab, India. He builds scalable R
 - C++
 - C
 - Spring Boot
-- Spring Security
 - JPA/Hibernate
 - Flask
-- Express.js
 - PostgreSQL
 - MySQL
-- Redis
-- MongoDB
 - Docker
 - Kubernetes
-- AWS
 - Git
-- GitHub Actions
 - Vercel
 
 ## Key Projects
 - GrabBite
-- AutoGrade
-- SmartInventory
 - synapse
 
 ## Links & Navigation
-- [Home Page](https://manavbaghel.dev/)
-- [Projects Section](https://manavbaghel.dev/#projects)
-- [Experience Section](https://manavbaghel.dev/#experience)
-- [Certifications Section](https://manavbaghel.dev/#certifications)
-- [Contact Form](https://manavbaghel.dev/#contact)
+- [Home Page](https://manavbaghel.vercel.app/)
+- [Projects Section](https://manavbaghel.vercel.app/#projects)
+- [Experience Section](https://manavbaghel.vercel.app/#experience)
+- [Certifications Section](https://manavbaghel.vercel.app/#certifications)
+- [Contact Form](https://manavbaghel.vercel.app/#contact)
