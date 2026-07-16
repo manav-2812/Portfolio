@@ -1,13 +1,20 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
+import useCoarsePointer from '../hooks/useCoarsePointer'
 
 /* ── Entrance reveal variants ───────────────────────────────────────────── */
-const revealVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.72, ease: [0.16, 1, 0.3, 1] } },
+const sectionReveal = {
+  hidden: { opacity: 0, y: 20, filter: 'blur(4px)' },
+  visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.75, ease: [0.25, 1, 0.5, 1] } },
 }
 
+const cardReveal = (delay = 0) => ({
+  hidden: { opacity: 0, y: 28, filter: 'blur(3px)' },
+  visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.8, delay, ease: [0.25, 1, 0.5, 1] } },
+})
+
 export default function Experience() {
+  const isCoarse = useCoarsePointer()
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-80px' })
 
@@ -28,7 +35,7 @@ export default function Experience() {
         {/* Section Header */}
         <motion.div
           className="mb-16 md:mb-20"
-          variants={revealVariants}
+          variants={sectionReveal}
           initial="hidden"
           animate={inView ? 'visible' : 'hidden'}
         >
@@ -39,10 +46,9 @@ export default function Experience() {
           >
             <span className="block" style={{ color: 'var(--pine)' }}>Education &amp;</span>
             <span 
-              className="block" 
+              className="block text-stroke-responsive" 
               style={{ 
                 color: 'transparent',
-                WebkitTextStroke: '2px var(--ink)',
                 opacity: 0.15,
                 marginTop: '-0.2rem'
               }}
@@ -58,12 +64,12 @@ export default function Experience() {
           {/* Left Column — Education */}
           <motion.div
             className="flex flex-col gap-6"
-            initial={{ opacity: 0, y: 24 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.72, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            variants={cardReveal(0.1)}
+            initial="hidden"
+            animate={inView ? 'visible' : 'hidden'}
           >
             <motion.div
-              className="card relative overflow-hidden group transition-colors"
+              className="card relative overflow-hidden group"
               onMouseMove={handleMouseMove}
               style={{
                 borderRadius: 'var(--radius-card)',
@@ -71,8 +77,8 @@ export default function Experience() {
                 background: 'var(--paper-dim)',
                 padding: '2.25rem 2.5rem',
               }}
-              whileHover={{ y: -5, borderColor: 'rgba(60, 74, 63, 0.25)' }}
-              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              whileHover={isCoarse ? undefined : { y: -6, borderColor: 'rgba(60, 74, 63, 0.28)', boxShadow: '0 20px 40px -20px rgba(25,23,20,0.12)' }}
+              transition={{ type: 'spring', stiffness: 280, damping: 24 }}
             >
               {/* Mouse Follow Spotlight Glow */}
               <div
@@ -154,7 +160,7 @@ export default function Experience() {
                         cursor: 'default',
                         display: 'inline-block',
                       }}
-                      whileHover={{ scale: 1.05, borderColor: 'var(--pine)', color: 'var(--ink)' }}
+                      whileHover={isCoarse ? undefined : { scale: 1.05, borderColor: 'var(--pine)', color: 'var(--ink)' }}
                       transition={{ duration: 0.15 }}
                     >
                       {tag}
@@ -168,12 +174,12 @@ export default function Experience() {
           {/* Right Column — Experience */}
           <motion.div
             className="flex flex-col gap-6"
-            initial={{ opacity: 0, y: 24 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.72, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            variants={cardReveal(0.2)}
+            initial="hidden"
+            animate={inView ? 'visible' : 'hidden'}
           >
             <motion.div
-              className="card relative overflow-hidden group transition-colors"
+              className="card relative overflow-hidden group"
               onMouseMove={handleMouseMove}
               style={{
                 borderRadius: 'var(--radius-card)',
@@ -181,8 +187,8 @@ export default function Experience() {
                 background: 'var(--paper-dim)',
                 padding: '2.25rem 2.5rem',
               }}
-              whileHover={{ y: -5, borderColor: 'rgba(60, 74, 63, 0.25)' }}
-              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              whileHover={isCoarse ? undefined : { y: -6, borderColor: 'rgba(60, 74, 63, 0.28)', boxShadow: '0 20px 40px -20px rgba(25,23,20,0.12)' }}
+              transition={{ type: 'spring', stiffness: 280, damping: 24 }}
             >
               {/* Mouse Follow Spotlight Glow */}
               <div
@@ -264,7 +270,7 @@ export default function Experience() {
                         cursor: 'default',
                         display: 'inline-block',
                       }}
-                      whileHover={{ scale: 1.05, borderColor: 'var(--pine)', color: 'var(--ink)' }}
+                      whileHover={isCoarse ? undefined : { scale: 1.05, borderColor: 'var(--pine)', color: 'var(--ink)' }}
                       transition={{ duration: 0.15 }}
                     >
                       {tag}
