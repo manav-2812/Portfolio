@@ -60,15 +60,32 @@ function Footer({ currentPath }) {
           {/* Quick nav */}
           <nav aria-label="Footer navigation">
             <p className="text-xs mb-3" style={{ fontFamily: 'var(--font-mono)', color: 'var(--ink-faint)' }}>Quick links</p>
-            <ul className="flex flex-wrap gap-x-6 gap-y-2 list-none" role="list">
+            <ul className="flex flex-wrap gap-2 list-none" role="list">
               {footerNav.map(link => (
                 <li key={link.href}>
                   <a
                     href={isHome ? link.href : `/${link.href}`}
-                    className="text-sm transition-colors duration-200"
-                    style={{ color: 'var(--ink-faint)' }}
-                    onMouseEnter={e => e.currentTarget.style.color = 'var(--pine)'}
-                    onMouseLeave={e => e.currentTarget.style.color = 'var(--ink-faint)'}
+                    className="text-xs transition-colors duration-200"
+                    style={{
+                      fontFamily: 'var(--font-mono)',
+                      color: 'var(--ink-soft)',
+                      border: '1px solid var(--hairline)',
+                      borderRadius: '999px',
+                      padding: '0.25rem 0.75rem',
+                      background: 'var(--paper-dim)',
+                      display: 'inline-block',
+                      transition: 'border-color 0.15s, background-color 0.15s, color 0.15s',
+                    }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.color = 'var(--pine)'
+                      e.currentTarget.style.borderColor = 'var(--pine)'
+                      e.currentTarget.style.background = 'var(--paper-deep)'
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.color = 'var(--ink-soft)'
+                      e.currentTarget.style.borderColor = 'var(--hairline)'
+                      e.currentTarget.style.background = 'var(--paper-dim)'
+                    }}
                   >
                     {link.label}
                   </a>
@@ -192,11 +209,16 @@ function ScrollTopButton() {
       id="scroll-top-btn"
       onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
       aria-label="Scroll back to top"
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: visible ? 1 : 0, y: visible ? 0 : 16, pointerEvents: visible ? 'auto' : 'none' }}
-      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ y: -3 }}
-      whileTap={{ scale: 0.93 }}
+      initial={{ opacity: 0, scale: 0.8, y: 12 }}
+      animate={{
+        opacity: visible ? 1 : 0,
+        scale: visible ? 1 : 0.8,
+        y: visible ? 0 : 12,
+        pointerEvents: visible ? 'auto' : 'none',
+      }}
+      transition={{ duration: 0.38, ease: [0.25, 1, 0.5, 1] }}
+      whileHover={{ y: -4, scale: 1.08 }}
+      whileTap={{ scale: 0.92 }}
     >
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
         <polyline points="18 15 12 9 6 15" />
@@ -208,7 +230,12 @@ function ScrollTopButton() {
 function SectionFallback() {
   return (
     <div className="section min-h-[30vh] flex items-center justify-center" aria-hidden="true">
-      <div className="w-12 h-[1px] animate-pulse" style={{ background: 'var(--hairline-strong)' }} />
+      <motion.div
+        className="h-px"
+        style={{ background: 'var(--pine)', width: '48px' }}
+        animate={{ opacity: [0.3, 0.8, 0.3], scaleX: [0.6, 1, 0.6] }}
+        transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+      />
     </div>
   )
 }
@@ -249,8 +276,9 @@ function App() {
 
     // Lenis smooth scroll — v1+ API (removed deprecated direction/smooth options)
     const lenis = new Lenis({
-      lerp: 0.08,
+      lerp: 0.1,
       smoothWheel: true,
+      syncTouch: false,
     })
 
     function raf(time) {
@@ -282,7 +310,7 @@ function App() {
 
       <PremiumBackground />
       <Navbar currentPath={currentPath} />
-      <main id="main-content" aria-hidden={loading || undefined}>
+      <main id="main-content" aria-hidden={loading ? true : undefined}>
         {isHome ? (
           <>
             <Hero />
