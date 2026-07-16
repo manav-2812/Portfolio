@@ -35,6 +35,7 @@ Manav Baghel is a Backend Developer based in Punjab, India. He builds scalable R
 - GrabBite
 - AutoGrade
 - SmartInventory
+- synapse
 
 ## Links & Navigation
 - [Home Page](https://manavbaghel.dev/)
