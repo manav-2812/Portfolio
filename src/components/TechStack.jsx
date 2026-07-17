@@ -2,10 +2,11 @@ import { useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
 import useCoarsePointer from '../hooks/useCoarsePointer'
 import {
-  SiC, SiSpringboot, SiPython, SiFlask, SiPostgresql, SiMysql,
+  SiC, SiSpringboot, SiPython, SiFlask, SiPostgresql,
   SiDocker, SiKubernetes, SiGit, SiGithub, SiPostman, SiHibernate,
   SiApachemaven, SiVercel
 } from 'react-icons/si'
+import { DiMysql } from 'react-icons/di'
 import { FaJava } from 'react-icons/fa6'
 import { VscServer } from 'react-icons/vsc'
 import { TbBrandCpp, TbBrandVscode } from 'react-icons/tb'
@@ -20,7 +21,7 @@ const allSkills = [
   { name: 'Flask', Icon: SiFlask, color: 'var(--ink-soft)' },
   { name: 'Hibernate', Icon: SiHibernate, color: '#59666c' },
   { name: 'PostgreSQL', Icon: SiPostgresql, color: '#4169a1' },
-  { name: 'MySQL', Icon: SiMysql, color: '#4479a1' },
+  { name: 'MySQL', Icon: DiMysql, color: '#4479a1' },
   { name: 'Docker', Icon: SiDocker, color: '#2496ed' },
   { name: 'Kubernetes', Icon: SiKubernetes, color: '#326ce5' },
   { name: 'Maven', Icon: SiApachemaven, color: '#c71a36' },

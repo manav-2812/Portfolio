@@ -63,15 +63,15 @@ The project is intentionally scoped as a single-page application. There is no CM
 
 | Hero                                                                      | About & Skills                                                                  |
 | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| [![Hero section](docs/screenshots/hero.webp)](docs/screenshots/hero.webp) | [![Skills section](docs/screenshots/skills.webp)](docs/screenshots/skills.webp) |
+| [![Hero section](docs/screenshots/hero.png)](docs/screenshots/hero.png)   | [![Skills section](docs/screenshots/skills.png)](docs/screenshots/skills.png)   |
 
 | Projects                                                                              | Experience                                                                                   |
 | ------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| [![Projects section](docs/screenshots/projects.webp)](docs/screenshots/projects.webp) | [![Experience timeline](docs/screenshots/experience.webp)](docs/screenshots/experience.webp) |
+| [![Projects section](docs/screenshots/projects.png)](docs/screenshots/projects.png)   | [![Experience timeline](docs/screenshots/experience.png)](docs/screenshots/experience.png)   |
 
 | Contact                                                                            | Mobile View                                                                  |
 | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| [![Contact section](docs/screenshots/contact.webp)](docs/screenshots/contact.webp) | [![Mobile view](docs/screenshots/mobile.webp)](docs/screenshots/mobile.webp) |
+| [![Contact section](docs/screenshots/contact.png)](docs/screenshots/contact.png)   | [![Mobile view](docs/screenshots/mobile.png)](docs/screenshots/mobile.png)   |
 
 </div>
 
@@ -82,7 +82,7 @@ The project is intentionally scoped as a single-page application. There is no CM
 ### User Experience
 
 - **Smooth Inertial Scrolling**: Managed globally using Lenis for premium mousewheel scrolling decay.
-- **Scrollspy Gutter Gages**: Custom desktop left-gutter layout indicator (`LedgerLine`) tracking scroll progress and active viewports.
+- **Scrollspy Progress Bar**: Custom horizontal scroll progress bar (`#scroll-progress`) inside `Navbar.jsx` tracking page scroll percentage.
 - **Intersection-Spy Navbar**: Tracks and highlights the current section in view using a decoupled IntersectionObserver instance.
 - **Custom Tracking Cursor**: Physics-based cursor ring utilizing linear interpolation (lerp: `0.15`) that morphs size on hover states, optimized with document-level event delegation (disabled on touch devices).
 - **Touch-safe Hover Safeguards**: Uses a device pointer capability check to disable hover effects (`whileHover` scaling, colors) on touch devices, completely avoiding "stuck hover" states.
@@ -126,7 +126,7 @@ The project is intentionally scoped as a single-page application. There is no CM
 | **Icons**            | react-icons (hi2, si, fa6, vsc, tb)                   |
 | **Backend Services** | Web3Forms (serverless form submission)                |
 | **Tooling**          | oxlint, Vite build with manual chunk splitting        |
-| **Deployment**       | Vercel / Railway                                      |
+| **Deployment**       | Vercel                                                |
 
 <br />
 
@@ -134,7 +134,7 @@ The project is intentionally scoped as a single-page application. There is no CM
 
 - ✔ Premium editorial design system
 - ✔ Linear-interpolation Custom Cursor
-- ✔ Active vertical scroll tracking line (LedgerLine)
+- ✔ Active horizontal scroll progress tracking bar
 - ✔ Lazy-loaded layout splitting
 - ✔ Environment key gating (Web3Forms)
 - ✔ Accessibility-first styling (Reduced motion / Focus outlines)
@@ -151,7 +151,7 @@ Browser Viewport
    │
    ├── Lenis (Scroll Controller)
    ├── Cursor (Independent Pointer Tracker)
-   ├── LedgerLine (Dynamic progress tracking on desktop gutter)
+   ├── #scroll-progress (Dynamic horizontal progress tracking bar)
    │
    ▼
 App.jsx (Client-Side Router & Layout Shell)
@@ -191,12 +191,12 @@ portfolio/
 │   └── sitemap.xml           # XML sitemap mapping URLs
 ├── docs/
 │   └── screenshots/          # Portfolio showcase screenshots
-│       ├── contact.webp
-│       ├── experience.webp
-│       ├── hero.webp
-│       ├── mobile.webp
-│       ├── projects.webp
-│       └── skills.webp
+│       ├── contact.png
+│       ├── experience.png
+│       ├── hero.png
+│       ├── mobile.png
+│       ├── projects.png
+│       └── skills.png
 ├── src/
 │   ├── assets/               # Local static assets (empty)
 │   ├── components/
@@ -304,9 +304,9 @@ To deliver optimal loading times and keep frames fluid, several front-end perfor
 
 The viewport is tested across standard breakpoints (mobile, tablet, desktop) using mobile-first styles:
 
-- **Mobile (< 768px)**: Adapts vertical whitespace with compact padding values (`6.5rem`), transforms grids to single-column blocks, disables the desktop-specific `Cursor` and `LedgerLine`, suppresses hover animations to avoid "stuck tap" styles, and unmounts the orbiting constellation to save mobile CPU/battery.
+- **Mobile (< 768px)**: Adapts vertical whitespace with compact padding values (`6.5rem`), transforms grids to single-column blocks, disables the desktop-specific custom `Cursor`, suppresses hover animations to avoid "stuck tap" styles, and unmounts the orbiting constellation to save mobile CPU/battery.
 - **Tablet (768px - 1024px)**: Scales layout elements into grid structures.
-- **Desktop (> 1024px)**: Enables custom circular mouse cursors, vertical progress gauges, and multi-column visual boards.
+- **Desktop (> 1024px)**: Enables custom circular mouse cursors, scroll progress indicators, and multi-column visual boards.
 
 <br />
 
